@@ -926,6 +926,7 @@ function populateDate(){
   const yearSelect =
     document.getElementById("taskYear");
 
+  // Reset option awal
   dateSelect.innerHTML =
     '<option value="">Tanggal</option>';
 
@@ -941,14 +942,18 @@ function populateDate(){
     "September","Oktober","November","Desember"
   ];
 
-  for(let i=1; i<=31; i++){
+  // Isi tanggal
+  for(let i = 1; i <= 31; i++){
 
     dateSelect.innerHTML +=
-      `<option value="${i}">${i}</option>`;
+      `<option value="${i}">
+        ${i}
+      </option>`;
 
   }
 
-  months.forEach(month => {
+  // Isi bulan
+  months.forEach((month)=>{
 
     monthSelect.innerHTML +=
       `<option value="${month}">
@@ -957,9 +962,11 @@ function populateDate(){
 
   });
 
-  const currentYear = new Date().getFullYear();
+  // Isi tahun
+  const currentYear =
+    new Date().getFullYear();
 
-  for(let y=currentYear; y<=currentYear+10; y++){
+  for(let y = currentYear; y <= currentYear + 10; y++){
 
     yearSelect.innerHTML +=
       `<option value="${y}">
@@ -967,10 +974,10 @@ function populateDate(){
       </option>`;
 
   }
-  
+
 }
 
-  function resetForm(){
+function resetForm(){
 
   document.getElementById("taskName").value = '';
   document.getElementById("taskDesc").value = '';
@@ -981,8 +988,8 @@ function populateDate(){
   showToast("Form berhasil direset");
 
 }
-  
-  function saveAllData(){
+
+function saveAllData(){
 
   const analysis = generateAnalysis();
 
@@ -998,18 +1005,7 @@ function populateDate(){
 
 }
 
-  const currentYear = new Date().getFullYear();
-
-  for(let y=currentYear;y<=currentYear+10;y++){
-
-    yearSelect.innerHTML +=
-    `<option value="${y}">
-      ${y}
-    </option>`;
-
-  }
-
-  function exportData(){
+function exportData(){
 
   const dataStr =
     JSON.stringify(tasks,null,2);
@@ -1031,11 +1027,12 @@ function populateDate(){
   a.click();
 
 }
-  
+
+// Jalankan saat website dibuka
 populateDate();
 renderTasks();
 updateStats();
-
+  
 </script>
 
 </body>
