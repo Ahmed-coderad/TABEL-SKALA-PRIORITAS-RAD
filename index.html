@@ -330,6 +330,13 @@ button{
   font-size:.9rem;
 }
 
+  select{
+  cursor:pointer;
+  appearance:auto;
+  -webkit-appearance:auto;
+  -moz-appearance:auto;
+}
+
 @keyframes fade{
   from{
     opacity:0;
@@ -917,28 +924,16 @@ function populateDate(){
     document.getElementById("taskMonth");
 
   const yearSelect =
-  document.getElementById("taskYear");
+    document.getElementById("taskYear");
 
-  const currentYear =
-  new Date().getFullYear();
-
-  for(let y=currentYear;y<=currentYear+10;y++){
-
-    yearSelect.innerHTML +=
-    `<option value="${y}">
-      ${y}
-    </option>`;
-
-  }
-  // Reset isi awal
   dateSelect.innerHTML =
-    `<option value="">Tanggal</option>`;
+    '<option value="">Tanggal</option>';
 
   monthSelect.innerHTML =
-    `<option value="">Bulan</option>`;
+    '<option value="">Bulan</option>';
 
   yearSelect.innerHTML =
-    `<option value="">Tahun</option>`;
+    '<option value="">Tahun</option>';
 
   const months = [
     "Januari","Februari","Maret","April",
@@ -946,18 +941,14 @@ function populateDate(){
     "September","Oktober","November","Desember"
   ];
 
-  // Isi tanggal
-  for(let i=1;i<=31;i++){
+  for(let i=1; i<=31; i++){
 
     dateSelect.innerHTML +=
-      `<option value="${i}">
-        ${i}
-      </option>`;
+      `<option value="${i}">${i}</option>`;
 
   }
 
-  // Isi bulan
-  months.forEach((month)=>{
+  months.forEach(month => {
 
     monthSelect.innerHTML +=
       `<option value="${month}">
@@ -966,6 +957,17 @@ function populateDate(){
 
   });
 
+  const currentYear = new Date().getFullYear();
+
+  for(let y=currentYear; y<=currentYear+10; y++){
+
+    yearSelect.innerHTML +=
+      `<option value="${y}">
+        ${y}
+      </option>`;
+
+  }
+  
 }
 
   function resetForm(){
