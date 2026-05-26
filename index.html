@@ -925,7 +925,7 @@ function populateDate(){
     "September","Oktober","November","Desember"
   ];
 
-  // tanggal
+  // Isi tanggal
   for(let i=1;i<=31;i++){
 
     dateSelect.innerHTML +=
@@ -933,7 +933,7 @@ function populateDate(){
 
   }
 
-  // bulan
+  // Isi bulan
   months.forEach((month)=>{
 
     monthSelect.innerHTML +=
@@ -942,6 +942,18 @@ function populateDate(){
     </option>`;
 
   });
+
+  // Isi tahun
+  const currentYear = new Date().getFullYear();
+
+  for(let y=currentYear;y<=currentYear+10;y++){
+
+    yearSelect.innerHTML +=
+    `<option value="${y}">
+      ${y}
+    </option>`;
+
+  }
 
 }
 
