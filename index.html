@@ -712,10 +712,17 @@ document.getElementById("taskYear").value;
 
   if(name === ''){
 
-    showToast("Nama aktivitas wajib diisi");
-    return;
+   showToast("Nama aktivitas wajib diisi");
+   return;
 
-  }
+}
+
+if(!date || !month || !year){
+
+   showToast("Tanggal harus lengkap");
+   return;
+
+}
 
   const task = {
 
@@ -754,7 +761,7 @@ function sendEmail(task, analysis){
       task_name:task.name,
       task_desc:task.desc,
       task_type:task.type,
-      to_email:"rizkyahmeddarmawan98@gmail.com"
+      to_email:"rizkyahmeddarmawan98@gmail.com",
 
       analysis:analysis
     }
@@ -779,9 +786,10 @@ function sendWhatsAppSummary(){
 `${index+1}. ${task.name}
 📅 ${task.date} ${task.month} ${task.year}
 📂 ${task.type}
-message += analysis;
 
-`;
+;
+const analysis = generateAnalysis();
+message += analysis;
 
   });
 
@@ -879,9 +887,9 @@ ${recommendation}
 
 }
 
-  populateDate();
-
 function populateDate(){
+}
+  populateDate();
 
   const dateSelect =
   document.getElementById("taskDate");
@@ -905,6 +913,7 @@ function populateDate(){
 
   }
 
+
   months.forEach((month,index)=>{
 
     monthSelect.innerHTML +=
@@ -913,6 +922,18 @@ function populateDate(){
     </option>`;
 
   });
+
+  function resetForm(){
+
+  document.getElementById("taskName").value = '';
+  document.getElementById("taskDesc").value = '';
+  document.getElementById("taskDate").value = '';
+  document.getElementById("taskMonth").value = '';
+  document.getElementById("taskYear").value = '';
+
+  showToast("Form berhasil direset");
+
+}
 
 function resetForm(){
 
