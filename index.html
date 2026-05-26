@@ -944,10 +944,16 @@ function populateDate(){
   });
 
   // Isi tahun
- populateDate();
+ const currentYear = new Date().getFullYear();
 
-renderTasks();
-updateStats();
+for(let y=currentYear;y<=currentYear+10;y++){
+
+  yearSelect.innerHTML +=
+  `<option value="${y}">
+    ${y}
+  </option>`;
+
+}
 
 }
 
@@ -1012,7 +1018,8 @@ updateStats();
   a.click();
 
 }
-  
+  renderTasks();
+updateStats();
 
 </script>
 
