@@ -495,6 +495,10 @@ button{
     Reset
   </button>
 
+  <button class="btn" onclick="exportData()">
+  Export JSON
+  </button>
+
 </div>
     </div>
 
@@ -572,11 +576,17 @@ function saveTasks(){
   localStorage.setItem("coveyTasks", JSON.stringify(tasks));
 }
 
-function showToast(message){
+function showToast(message,type="success"){
 
   const toast = document.getElementById("toast");
 
   toast.innerText = message;
+
+  toast.style.borderLeftColor =
+    type === "error"
+    ? "var(--danger)"
+    : "var(--success)";
+
   toast.classList.add("show");
 
   setTimeout(()=>{
@@ -624,19 +634,16 @@ function renderTasks(){
       card.classList.add("completed");
     }
 
-    const title = document.createElement("h4");
-
-title.textContent = task.name;
-
-card.appendChild(title);
+    card.innerHTML = `
+      <h4>${task.name}</h4>
 
       <small>
-  ${task.desc || 'Tidak ada deskripsi'}
-</small>
+        ${task.desc || 'Tidak ada deskripsi'}
+      </small>
 
-<small>
-  📅 ${task.date} ${task.month} ${task.year}
-</small>
+      <small>
+        📅 ${task.date} ${task.month} ${task.year}
+      </small>
 
       <div class="task-footer">
 
@@ -692,7 +699,7 @@ card.appendChild(title);
   });
 
 }
-
+  
 function addTask(){
 
   const name =
@@ -715,7 +722,18 @@ document.getElementById("taskYear").value;
 
   if(name === ''){
 
-   showToast("Nama aktivitas wajib diisi");
+   showToast("Nama aktivitas wajib diisi","error");
+   return;
+
+}
+
+  const duplicate = tasks.find(t =>
+  t.name.toLowerCase() === name.toLowerCase()
+);
+
+if(duplicate){
+
+   showToast("Aktivitas sudah ada","error");
    return;
 
 }
@@ -782,8 +800,10 @@ function sendWhatsAppSummary(){
 
   let message = `📌 PRIORITY PLANNER\n\n`;
 
-  tasks.forEach((task,index)=>{
+  message += `Total Aktivitas: ${tasks.length}\n\n`;
 
+  tasks.slice(0,20).forEach((task,index)=>{
+    
     message +=
 `${index+1}. ${task.name}
 📅 ${task.date} ${task.month} ${task.year}
@@ -921,17 +941,6 @@ function populateDate(){
 
   });
 
-  const currentYear = new Date().getFullYear();
-
-  for(let y=currentYear;y<=currentYear+10;y++){
-
-    yearSelect.innerHTML +=
-    `<option value="${y}">
-      ${y}
-    </option>`;
-
-  }
-
 }
 
 populateDate();
@@ -950,9 +959,11 @@ populateDate();
   
   function saveAllData(){
 
+  const analysis = generateAnalysis();
+
   tasks.forEach(task=>{
 
-    sendEmail(task);
+    sendEmail(task, analysis);
 
   });
 
@@ -972,6 +983,29 @@ populateDate();
     </option>`;
 
   }
+
+  function exportData(){
+
+  const dataStr =
+    JSON.stringify(tasks,null,2);
+
+  const blob =
+    new Blob([dataStr],{
+      type:"application/json"
+    });
+
+  const url =
+    URL.createObjectURL(blob);
+
+  const a =
+    document.createElement("a");
+
+  a.href = url;
+  a.download = "priority-planner.json";
+
+  a.click();
+
+}
   
 renderTasks();
 updateStats();
