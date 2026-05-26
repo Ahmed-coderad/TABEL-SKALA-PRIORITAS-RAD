@@ -136,6 +136,12 @@ body{
   margin-bottom:18px;
 }
 
+  .date-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:10px;
+}
+
 label{
   display:block;
   margin-bottom:8px;
@@ -170,6 +176,20 @@ textarea{
 button{
   border:none;
   cursor:pointer;
+}
+
+  .button-group{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.save-btn{
+  background:linear-gradient(135deg,#16a34a,#15803d);
+}
+
+.reset-btn{
+  background:linear-gradient(135deg,#ef4444,#dc2626);
 }
 
 .btn{
@@ -419,6 +439,26 @@ button{
       </div>
 
       <div class="form-group">
+  <label>Tanggal Target</label>
+
+  <div class="date-grid">
+
+    <select id="taskDate">
+      <option value="">Tanggal</option>
+    </select>
+
+    <select id="taskMonth">
+      <option value="">Bulan</option>
+    </select>
+
+    <select id="taskYear">
+      <option value="">Tahun</option>
+    </select>
+
+  </div>
+</div>
+
+      <div class="form-group">
         <label>Kategori Prioritas</label>
         <select id="taskType">
 
@@ -441,10 +481,21 @@ button{
         </select>
       </div>
 
-      <button class="btn" onclick="addTask()">
-        + Tambahkan Prioritas
-      </button>
+      <div class="button-group">
 
+  <button class="btn" onclick="addTask()">
+    + Tambah Prioritas
+  </button>
+
+  <button class="btn save-btn" onclick="saveAllData()">
+    Simpan
+  </button>
+
+  <button class="btn reset-btn" onclick="resetForm()">
+    Reset
+  </button>
+
+</div>
     </div>
 
     <div class="priority-grid">
@@ -577,8 +628,12 @@ function renderTasks(){
       <h4>${task.name}</h4>
 
       <small>
-        ${task.desc || 'Tidak ada deskripsi'}
-      </small>
+  ${task.desc || 'Tidak ada deskripsi'}
+</small>
+
+<small>
+  📅 ${task.date} ${task.month} ${task.year}
+</small>
 
       <div class="task-footer">
 
@@ -646,6 +701,15 @@ function addTask(){
   const type =
   document.getElementById("taskType").value;
 
+  const date =
+document.getElementById("taskDate").value;
+
+const month =
+document.getElementById("taskMonth").value;
+
+const year =
+document.getElementById("taskYear").value;
+
   if(name === ''){
 
     showToast("Nama aktivitas wajib diisi");
@@ -659,7 +723,10 @@ function addTask(){
     name,
     desc,
     type,
-    completed:false
+    completed:false,
+    date,
+    month,
+    year
 
   };
 
@@ -669,8 +736,7 @@ function addTask(){
   renderTasks();
   updateStats();
 
-  sendEmail(task);
-  sendWhatsApp(task);
+  sendEmail(task, generateAnalysis());
 
   document.getElementById("taskName").value = '';
   document.getElementById("taskDesc").value = '';
@@ -679,7 +745,7 @@ function addTask(){
 
 }
 
-function sendEmail(task){
+function sendEmail(task, analysis){
 
   emailjs.send(
     "YOUR_SERVICE_ID",
@@ -689,6 +755,8 @@ function sendEmail(task){
       task_desc:task.desc,
       task_type:task.type,
       to_email:"rizkyahmeddarmawan98@gmail.com"
+
+      analysis:analysis
     }
   )
   .then(()=>{
@@ -700,29 +768,191 @@ function sendEmail(task){
 
 }
 
-function sendWhatsApp(task){
+function sendWhatsAppSummary(){
 
-  const text =
-`📌 PRIORITY PLANNER
+  let message =
+`📌 PRIORITY PLANNER\n\n`;
 
-📝 Aktivitas:
-${task.name}
+  tasks.forEach((task,index)=>{
 
-📄 Deskripsi:
-${task.desc}
+    message +=
+`${index+1}. ${task.name}
+📅 ${task.date} ${task.month} ${task.year}
+📂 ${task.type}
+message += analysis;
 
-📂 Kategori:
-${task.type}
+`;
 
-✅ Data dikirim otomatis dari Priority Planner`;
+  });
 
   const wa =
-`https://wa.me/6285888082504?text=${encodeURIComponent(text)}`;
+`https://wa.me/6285888082504?text=${encodeURIComponent(message)}`;
 
   window.open(wa,'_blank');
 
+  const analysis =
+generateAnalysis();
+
 }
 
+  function generateAnalysis(){
+
+  const q1 =
+  tasks.filter(t=>t.type==='q1').length;
+
+  const q2 =
+  tasks.filter(t=>t.type==='q2').length;
+
+  const q3 =
+  tasks.filter(t=>t.type==='q3').length;
+
+  const q4 =
+  tasks.filter(t=>t.type==='q4').length;
+
+  const total = tasks.length;
+
+  let dominant = '';
+  let recommendation = '';
+
+  const max =
+  Math.max(q1,q2,q3,q4);
+
+  if(max === q1){
+
+    dominant =
+    'Kuadran 1 (Penting & Mendesak)';
+
+    recommendation =
+    'Kurangi aktivitas mendesak dengan membuat perencanaan lebih awal.';
+
+  }
+
+  else if(max === q2){
+
+    dominant =
+    'Kuadran 2 (Penting Tidak Mendesak)';
+
+    recommendation =
+    'Sangat baik. Fokus pengembangan diri dan perencanaan jangka panjang sudah optimal.';
+
+  }
+
+  else if(max === q3){
+
+    dominant =
+    'Kuadran 3 (Tidak Penting Tapi Mendesak)';
+
+    recommendation =
+    'Kurangi distraksi dan aktivitas yang mengganggu fokus utama.';
+
+  }
+
+  else{
+
+    dominant =
+    'Kuadran 4 (Tidak Penting & Tidak Mendesak)';
+
+    recommendation =
+    'Mulailah meningkatkan aktivitas produktif dan mengurangi kegiatan tidak penting.';
+
+  }
+
+  return `
+📊 ANALISIS PRIORITAS
+
+Total Aktivitas: ${total}
+
+🔥 Aktivitas Dominan:
+${dominant}
+
+📌 Detail:
+Q1: ${q1}
+Q2: ${q2}
+Q3: ${q3}
+Q4: ${q4}
+
+💡 Rekomendasi:
+${recommendation}
+
+✅ Sistem berhasil menganalisis pola prioritas user.
+`;
+
+}
+
+  populateDate();
+
+function populateDate(){
+
+  const dateSelect =
+  document.getElementById("taskDate");
+
+  const monthSelect =
+  document.getElementById("taskMonth");
+
+  const yearSelect =
+  document.getElementById("taskYear");
+
+  const months = [
+    "Januari","Februari","Maret","April",
+    "Mei","Juni","Juli","Agustus",
+    "September","Oktober","November","Desember"
+  ];
+
+  for(let i=1;i<=31;i++){
+
+    dateSelect.innerHTML +=
+    `<option value="${i}">${i}</option>`;
+
+  }
+
+  months.forEach((month,index)=>{
+
+    monthSelect.innerHTML +=
+    `<option value="${month}">
+      ${month}
+    </option>`;
+
+  });
+
+function resetForm(){
+
+  document.getElementById("taskName").value = '';
+  document.getElementById("taskDesc").value = '';
+  document.getElementById("taskDate").value = '';
+  document.getElementById("taskMonth").value = '';
+  document.getElementById("taskYear").value = '';
+
+  showToast("Form berhasil direset");
+
+}
+  
+  function saveAllData(){
+
+  tasks.forEach(task=>{
+
+    sendEmail(task);
+
+  });
+
+  sendWhatsAppSummary();
+
+  showToast("Semua data berhasil disimpan");
+
+}
+
+  const currentYear = new Date().getFullYear();
+
+  for(let y=currentYear;y<=currentYear+10;y++){
+
+    yearSelect.innerHTML +=
+    `<option value="${y}">
+      ${y}
+    </option>`;
+
+  }
+
+}
+  
 renderTasks();
 updateStats();
 
