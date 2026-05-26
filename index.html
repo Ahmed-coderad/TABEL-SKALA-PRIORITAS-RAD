@@ -624,8 +624,11 @@ function renderTasks(){
       card.classList.add("completed");
     }
 
-    card.innerHTML = `
-      <h4>${task.name}</h4>
+    const title = document.createElement("h4");
+
+title.textContent = task.name;
+
+card.appendChild(title);
 
       <small>
   ${task.desc || 'Tidak ada deskripsi'}
@@ -777,8 +780,7 @@ function sendEmail(task, analysis){
 
 function sendWhatsAppSummary(){
 
-  let message =
-`📌 PRIORITY PLANNER\n\n`;
+  let message = `📌 PRIORITY PLANNER\n\n`;
 
   tasks.forEach((task,index)=>{
 
@@ -787,19 +789,18 @@ function sendWhatsAppSummary(){
 📅 ${task.date} ${task.month} ${task.year}
 📂 ${task.type}
 
-;
-const analysis = generateAnalysis();
-message += analysis;
+`;
 
   });
+
+  const analysis = generateAnalysis();
+
+  message += `\n${analysis}`;
 
   const wa =
 `https://wa.me/6285888082504?text=${encodeURIComponent(message)}`;
 
   window.open(wa,'_blank');
-
-  const analysis =
-generateAnalysis();
 
 }
 
@@ -888,8 +889,6 @@ ${recommendation}
 }
 
 function populateDate(){
-}
-  populateDate();
 
   const dateSelect =
   document.getElementById("taskDate");
@@ -913,8 +912,7 @@ function populateDate(){
 
   }
 
-
-  months.forEach((month,index)=>{
+  months.forEach((month)=>{
 
     monthSelect.innerHTML +=
     `<option value="${month}">
@@ -923,19 +921,22 @@ function populateDate(){
 
   });
 
-  function resetForm(){
+  const currentYear = new Date().getFullYear();
 
-  document.getElementById("taskName").value = '';
-  document.getElementById("taskDesc").value = '';
-  document.getElementById("taskDate").value = '';
-  document.getElementById("taskMonth").value = '';
-  document.getElementById("taskYear").value = '';
+  for(let y=currentYear;y<=currentYear+10;y++){
 
-  showToast("Form berhasil direset");
+    yearSelect.innerHTML +=
+    `<option value="${y}">
+      ${y}
+    </option>`;
+
+  }
 
 }
 
-function resetForm(){
+populateDate();
+
+  function resetForm(){
 
   document.getElementById("taskName").value = '';
   document.getElementById("taskDesc").value = '';
@@ -971,8 +972,6 @@ function resetForm(){
     </option>`;
 
   }
-
-}
   
 renderTasks();
 updateStats();
