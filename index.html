@@ -396,6 +396,64 @@ button{
 .flatpickr-day:hover{
   background:#e8f3ff !important;
     }
+
+.planner-header{
+
+  background:white;
+
+  border-radius:28px;
+
+  padding:28px;
+
+  margin-bottom:20px;
+
+  text-align:center;
+
+  box-shadow:var(--shadow);
+
+}
+
+.planner-label{
+
+  display:block;
+
+  font-size:.95rem;
+
+  font-weight:600;
+
+  color:var(--primary);
+
+  margin-bottom:12px;
+
+}
+
+.planner-input{
+
+  max-width:500px;
+
+  margin:auto;
+
+  text-align:center;
+
+  font-size:1.1rem;
+
+  font-weight:600;
+
+}
+
+#plannerTitle{
+
+  margin-top:18px;
+
+  color:var(--primary);
+
+  font-size:1.6rem;
+
+  font-weight:700;
+
+  line-height:1.4;
+
+  }
   
 @keyframes fade{
   from{
@@ -584,6 +642,26 @@ button{
 </div>
     </div>
 
+        <div class="planner-header">
+
+  <label class="planner-label">
+    Nama Tabel Prioritas
+  </label>
+
+  <input
+    type="text"
+    id="plannerName"
+    class="planner-input"
+    placeholder="Contoh: Prioritas Organisasi BEM 2026"
+    oninput="updatePlannerTitle()"
+  >
+
+  <h2 id="plannerTitle">
+    Belum Ada Nama Planner
+  </h2>
+
+        </div>
+
     <div class="priority-grid">
 
       <div class="quadrant q1">
@@ -652,10 +730,37 @@ emailjs.init("YOUR_PUBLIC_KEY");
 
 /* ========================================= */
 
-let tasks = JSON.parse(localStorage.getItem("coveyTasks")) || [];
+let plannerData =
+JSON.parse(
+  localStorage.getItem("coveyPlanner")
+) || {
 
+  plannerName:"",
+  tasks:[]
+
+};
+
+let tasks =
+plannerData.tasks || [];
+  
 function saveTasks(){
-  localStorage.setItem("coveyTasks", JSON.stringify(tasks));
+
+  plannerData = {
+
+    plannerName:
+    document.getElementById(
+      "plannerName"
+    ).value,
+
+    tasks
+
+  };
+
+  localStorage.setItem(
+    "coveyPlanner",
+    JSON.stringify(plannerData)
+  );
+
 }
 
 function showToast(message,type="success"){
@@ -912,7 +1017,12 @@ function sendEmail(task, analysis){
       task_desc:task.desc,
       task_type:task.type,
       to_email:"rizkyahmeddarmawan98@gmail.com",
+planner_name:
+document.getElementById(
+"plannerName"
+).value,
 
+      
       analysis:analysis
     }
   )
@@ -927,9 +1037,16 @@ function sendEmail(task, analysis){
 
 function sendWhatsAppSummary(){
 
-  let message = `📌 PRIORITY PLANNER\n\n`;
+  const plannerName =
+  document.getElementById(
+    "plannerName"
+  ).value || "PRIORITY PLANNER";
 
-  message += `Total Aktivitas: ${tasks.length}\n\n`;
+  let message =
+  `📌 ${plannerName}\n\n`;
+
+  message +=
+  `Total Aktivitas: ${tasks.length}\n\n`;
 
   tasks.slice(0,20).forEach((task,index)=>{
     
@@ -1149,6 +1266,19 @@ function exportData(){
   22
 );
 
+    const plannerName =
+document.getElementById(
+  "plannerName"
+).value || "Tanpa Nama";
+
+doc.setFontSize(13);
+
+doc.text(
+  plannerName,
+  14,
+  30
+);
+    
   // Garis aksen
   doc.setDrawColor(...YELLOW);
 
@@ -1466,12 +1596,34 @@ function selectTimeType(type, element){
   }
 
 }
+  function updatePlannerTitle(){
+
+  const value =
+  document.getElementById(
+    "plannerName"
+  ).value.trim();
+
+  document.getElementById(
+    "plannerTitle"
+  ).innerText =
+  value || "Belum Ada Nama Planner";
+
+  saveTasks();
+
+  }
   
 // Jalankan saat website dibuka
 renderTasks();
 updateStats();
 
 initFlatpickr();
+
+  document.getElementById(
+  "plannerName"
+).value =
+plannerData.plannerName || "";
+
+updatePlannerTitle();
   
 </script>
 
