@@ -1080,7 +1080,7 @@ function saveAllData(){
 
   sendWhatsAppSummary();
 
-  showToast("Semua data berhasil disimpan");
+  showToast("Data berhasil dikirim & disimpan");
 
 }
 
@@ -1279,17 +1279,18 @@ task.name,
 ]);
 
   doc.autoTable({
+doc.autoTable({
 
   startY:95,
 
   head:[[
-  "No",
-  "Aktivitas",
-  "Deskripsi",
-  "Waktu",
-  "Kuadran",
-  "Status"
-]],
+    "No",
+    "Aktivitas",
+    "Deskripsi",
+    "Waktu",
+    "Kuadran",
+    "Status"
+  ]],
 
   body:data,
 
@@ -1308,41 +1309,40 @@ task.name,
   styles:{
     fontSize:9,
     cellPadding:3
-  }
+  },
 
-didParseCell: function(data){
+  didParseCell: function(data){
 
-  if(data.column.index === 5){
+    if(data.column.index === 5){
 
-    const status =
-      data.cell.raw;
+      const status = data.cell.raw;
 
-    // BELUM
-    if(status === "Belum"){
+      // STATUS BELUM
+      if(status === "Belum"){
 
-      data.cell.styles.textColor =
-      [252,193,2];
+        data.cell.styles.textColor =
+        [252,193,2];
 
-      data.cell.styles.fontStyle =
-      'bold';
+        data.cell.styles.fontStyle =
+        'bold';
+
+      }
+
+      // STATUS SELESAI
+      else if(status === "Selesai"){
+
+        data.cell.styles.textColor =
+        [34,197,94];
+
+        data.cell.styles.fontStyle =
+        'bold';
+
+      }
 
     }
 
-    // SELESAI
-    else if(status === "Selesai"){
-
-      data.cell.styles.textColor =
-      [34,197,94];
-
-      data.cell.styles.fontStyle =
-      'bold';
-
-    }
-
   }
 
-},
-    
 });
 
 const finalY =
