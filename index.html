@@ -129,6 +129,17 @@ body{
   margin-top:25px;
 }
 
+  .sidebar{
+  width:100%;
+}
+
+.content-area{
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+  width:100%;
+}
+
 .card{
   background:white;
   border-radius:30px;
@@ -211,6 +222,29 @@ button{
   font-weight:700;
   font-size:1rem;
   transition:.3s;
+  position:relative;
+  overflow:hidden;
+}
+
+.btn::before{
+  content:'';
+
+  position:absolute;
+
+  top:0;
+  left:-100%;
+
+  width:100%;
+  height:100%;
+
+  background:
+  rgba(255,255,255,.2);
+
+  transition:.5s;
+}
+
+.btn:hover::before{
+  left:100%;
 }
 
 .btn:hover{
@@ -399,17 +433,20 @@ button{
 
 .planner-header{
 
-  background:white;
+  background:rgba(255,255,255,.8);
 
-  border-radius:28px;
+  backdrop-filter:blur(12px);
 
-  padding:28px;
+  border:1px solid rgba(255,255,255,.5);
 
-  margin-bottom:20px;
+  border-radius:30px;
+
+  padding:35px;
 
   text-align:center;
 
-  box-shadow:var(--shadow);
+  box-shadow:
+  0 10px 30px rgba(0,0,0,.08);
 
 }
 
@@ -443,17 +480,23 @@ button{
 
 #plannerTitle{
 
-  margin-top:18px;
+  margin-top:20px;
 
   color:var(--primary);
 
-  font-size:1.6rem;
+  font-size:2rem;
 
-  font-weight:700;
+  font-weight:800;
 
   line-height:1.4;
 
-  }
+  text-align:center;
+
+  letter-spacing:.5px;
+
+  word-break:break-word;
+
+}
   
 @keyframes fade{
   from{
@@ -480,8 +523,62 @@ button{
     grid-template-columns:1fr 1fr;
   }
 
+  .planner-header{
+    padding:22px;
+  }
+
 }
 
+@media(max-width:700px){
+
+  body{
+    padding:12px;
+  }
+
+  .header{
+    padding:25px;
+    border-radius:25px;
+  }
+
+  .header h1{
+    font-size:2rem;
+  }
+
+  .header p{
+    font-size:.9rem;
+    line-height:1.7;
+  }
+
+  .stats{
+    grid-template-columns:1fr;
+  }
+
+  .priority-grid{
+    gap:15px;
+  }
+
+  .quadrant{
+    padding:18px;
+    min-height:auto;
+  }
+
+  .task{
+    padding:15px;
+  }
+
+  .task-footer{
+    flex-direction:column;
+  }
+
+  .planner-title{
+    font-size:1.3rem;
+  }
+
+  .planner-input{
+    font-size:1rem;
+  }
+
+}
 @media(max-width:650px){
 
   body{
@@ -545,7 +642,53 @@ button{
 
   </div>
 
-  <div class="main">
+<div class="main">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+
+    <div class="card">
+
+      <!-- SEMUA FORM -->
+      
+    </div>
+
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content-area">
+
+    <!-- NAMA PLANNER -->
+    <div class="planner-header">
+
+      <label class="planner-label">
+        Nama Tabel Prioritas
+      </label>
+
+      <input
+        type="text"
+        id="plannerName"
+        class="planner-input"
+        placeholder="Contoh: Prioritas Organisasi BEM 2026"
+        oninput="updatePlannerTitle()"
+      >
+
+      <h2 id="plannerTitle">
+        Belum Ada Nama Planner
+      </h2>
+
+    </div>
+
+    <!-- PRIORITY GRID -->
+    <div class="priority-grid">
+
+      ...
+      
+    </div>
+
+  </div>
+
+</div>
 
     <div class="card">
 
@@ -641,26 +784,6 @@ button{
 
 </div>
     </div>
-
-        <div class="planner-header">
-
-  <label class="planner-label">
-    Nama Tabel Prioritas
-  </label>
-
-  <input
-    type="text"
-    id="plannerName"
-    class="planner-input"
-    placeholder="Contoh: Prioritas Organisasi BEM 2026"
-    oninput="updatePlannerTitle()"
-  >
-
-  <h2 id="plannerTitle">
-    Belum Ada Nama Planner
-  </h2>
-
-        </div>
 
     <div class="priority-grid">
 
@@ -1434,6 +1557,25 @@ doc.autoTable({
     cellPadding:3
   },
 
+margin:{ left:10, right:10 },
+
+tableWidth:'auto',
+
+styles:{
+  fontSize:8,
+  cellPadding:3,
+  overflow:'linebreak'
+},
+
+columnStyles:{
+  0:{cellWidth:10},
+  1:{cellWidth:35},
+  2:{cellWidth:55},
+  3:{cellWidth:28},
+  4:{cellWidth:22},
+  5:{cellWidth:22}
+},
+  
   didParseCell: function(data){
 
     if(data.column.index === 5){
@@ -1493,8 +1635,14 @@ doc.setFontSize(10);
 const analysis =
   generateAnalysis();
 
-doc.text(
+const splitAnalysis =
+doc.splitTextToSize(
   analysis,
+  180
+);
+
+doc.text(
+  splitAnalysis,
   14,
   finalY + 10
 );
