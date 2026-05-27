@@ -12,6 +12,14 @@
 href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<!-- jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<!-- AutoTable -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
+<!-- Script utama -->
+<script src="script.js"></script>
   
 <style>
 
@@ -569,8 +577,8 @@ button{
     Reset
   </button>
 
-  <button class="btn" onclick="exportData()">
-  Export JSON
+  <button class="btn" onclick="exportPDF()">
+  Export PDF
   </button>
 
 </div>
@@ -1109,6 +1117,135 @@ function exportData(){
   });
 
   }
+
+  async function exportPDF(){
+
+  const { jsPDF } = window.jspdf;
+
+  const doc = new jsPDF({
+    orientation:'portrait',
+    unit:'mm',
+    format:'a4'
+  });
+
+  const BLUE = [17,113,177];
+  const YELLOW = [252,193,2];
+
+  // HEADER
+  doc.setFillColor(...BLUE);
+  doc.rect(0,0,210,28,'F');
+
+  doc.setTextColor(255,255,255);
+
+  doc.setFont("helvetica","bold");
+  doc.setFontSize(18);
+
+  doc.text("LAPORAN DATA",14,14);
+
+  doc.setFontSize(10);
+
+  doc.text(
+    "Sistem Laporan Digital",
+    14,
+    22
+  );
+
+  // Garis aksen
+  doc.setDrawColor(...YELLOW);
+
+  doc.setLineWidth(1.5);
+
+  doc.line(10,32,200,32);
+
+  // Informasi
+  doc.setTextColor(...BLUE);
+
+  doc.setFontSize(11);
+
+  let periode = "-";
+
+  if(selectedTimeType === "daily"){
+
+    periode =
+      document.getElementById("dailyInput")?.value || "-";
+
+  }
+
+  else if(selectedTimeType === "monthly"){
+
+    periode =
+      document.getElementById("monthlyInput")?.value || "-";
+
+  }
+
+  else{
+
+    periode =
+      document.getElementById("yearlyInput")?.value || "-";
+
+  }
+
+  doc.text(`Periode : ${periode}`,14,42);
+
+  doc.text(
+    `Tanggal Cetak : ${
+      new Date().toLocaleDateString('id-ID')
+    }`,
+    14,
+    50
+  );
+
+  // Data tabel
+  const data = [
+    ["Nama","Jabatan","Status"],
+    ["Ahmed","Supervisor","Aktif"],
+    ["Budi","Staff","Aktif"],
+    ["Siti","Admin","Aktif"]
+  ];
+
+  doc.autoTable({
+
+    startY:60,
+
+    head:[data[0]],
+
+    body:data.slice(1),
+
+    theme:'grid',
+
+    headStyles:{
+      fillColor:BLUE,
+      textColor:[255,255,255],
+      halign:'center'
+    },
+
+    alternateRowStyles:{
+      fillColor:[245,245,245]
+    },
+
+    styles:{
+      fontSize:10
+    }
+
+  });
+
+  // Footer
+  const pageHeight =
+    doc.internal.pageSize.height;
+
+  doc.setTextColor(120);
+
+  doc.setFontSize(9);
+
+  doc.text(
+    "Dokumen dibuat otomatis oleh sistem",
+    14,
+    pageHeight - 10
+  );
+
+  doc.save("Laporan.pdf");
+
+}
 
   let selectedTimeType = 'daily';
 
