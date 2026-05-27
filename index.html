@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-<title>Priority Planner - Stephen R. Covey</title>
+<title>RAD - Priority Planner</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -651,7 +651,7 @@ button{
     <div class="planner-header">
 
       <label class="planner-label">
-        Nama Tabel Prioritas
+        Project Tabel Skala Prioritas
       </label>
 
       <input
@@ -1243,15 +1243,15 @@ Aktivitas Dominan:
 ${dominant}
 
 Detail:
-Q1: ${q1}
-Q2: ${q2}
-Q3: ${q3}
-Q4: ${q4}
+Q1 "Penting dan Mendesak"            : ${q1}
+Q2 "Penting tapi Tidak Mendesak"     : ${q2}
+Q3 "Tidak Penting tapi Mendesak"     : ${q3}
+Q4 "Tidak Penting dan Tidak Mendesak": ${q4}
 
 Rekomendasi:
 ${recommendation}
 
-Sistem berhasil menganalisis pola prioritas.
+Sistem RAD berhasil menganalisis pola prioritas.
 `;
 
 }
@@ -1637,7 +1637,7 @@ doc.text(
   doc.setFontSize(9);
 
   doc.text(
-    "Dokumen dibuat otomatis oleh sistem",
+    "Dokumen dibuat otomatis oleh sistem RAD",
     14,
     pageHeight - 10
   );
