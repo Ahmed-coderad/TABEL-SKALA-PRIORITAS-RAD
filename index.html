@@ -1103,10 +1103,12 @@ function exportData(){
   function initFlatpickr(){
 
   flatpickr("#dailyInput",{
-    dateFormat:"d F Y"
+    dateFormat:"Y-m-d",
+    altInput:true,
+    altFormat:"d F Y"
   });
 
-}
+  }
 
   let selectedTimeType = 'daily';
 
@@ -1124,45 +1126,48 @@ function selectTimeType(type, element){
     document.getElementById('timeInputWrapper');
 
   // HARIAN
-  if(type === 'daily'){
+  // HARIAN
+  if(task.timeType === 'daily'){
 
-  wrapper.innerHTML = `
-    <input
-      type="text"
-      id="dailyInput"
-      placeholder="Pilih tanggal">
-  `;
+    const date =
+      new Date(task.timeValue);
 
-  initFlatpickr();
+    return date.toLocaleDateString(
+      'id-ID',
+      {
+        day:'numeric',
+        month:'long',
+        year:'numeric'
+      }
+    );
 
-}
+  }
 
   // BULANAN
-  else if(type === 'monthly'){
+  else if(task.timeType === 'monthly'){
 
-    wrapper.innerHTML = `
-      <input type="month" id="monthlyInput">
-    `;
+    const [year,month] =
+      task.timeValue.split('-');
+
+    const monthNames = [
+      "Januari","Februari","Maret",
+      "April","Mei","Juni",
+      "Juli","Agustus","September",
+      "Oktober","November","Desember"
+    ];
+
+    return `${monthNames[month-1]} ${year}`;
 
   }
 
   // TAHUNAN
   else{
 
-    let yearOptions = '';
+    return `Tahun ${task.timeValue}`;
 
-    const currentYear =
-      new Date().getFullYear();
+  }
 
-    for(let y=currentYear; y<=currentYear+10; y++){
-
-      yearOptions += `
-        <option value="${y}">
-          ${y}
-        </option>
-      `;
-
-    }
+}
 
     wrapper.innerHTML = `
       <select id="yearlyInput">
