@@ -867,13 +867,6 @@ if(duplicate){
 
 }
 
-if(!date || !month || !year){
-
-   showToast("Tanggal harus lengkap");
-   return;
-
-}
-
   const task = {
 
     id:Date.now(),
@@ -934,7 +927,7 @@ function sendWhatsAppSummary(){
     
     message +=
 `${index+1}. ${task.name}
-📅 ${task.date} ${task.month} ${task.year}
+📅 ${formatTime(task)}
 📂 ${task.type}
 
 `;
@@ -1036,19 +1029,38 @@ ${recommendation}
 
 }
 
-
 function resetForm(){
 
   document.getElementById("taskName").value = '';
   document.getElementById("taskDesc").value = '';
-  document.getElementById("taskDate").value = '';
-  document.getElementById("taskMonth").value = '';
-  document.getElementById("taskYear").value = '';
+
+  // reset ke harian
+  selectedTimeType = 'daily';
+
+  document
+    .querySelectorAll('.time-btn')
+    .forEach(btn=>btn.classList.remove('active'));
+
+  document
+    .querySelector('.time-btn')
+    .classList.add('active');
+
+  document.getElementById(
+    'timeInputWrapper'
+  ).innerHTML = `
+    <input
+      type="text"
+      id="dailyInput"
+      placeholder="Pilih tanggal">
+  `;
+
+  flatpickr("#dailyInput",{
+    dateFormat:"d F Y"
+  });
 
   showToast("Form berhasil direset");
 
-}
-
+  }
 function saveAllData(){
 
   const analysis = generateAnalysis();
@@ -1088,6 +1100,14 @@ function exportData(){
 
 }
 
+  function initFlatpickr(){
+
+  flatpickr("#dailyInput",{
+    dateFormat:"d F Y"
+  });
+
+}
+
   let selectedTimeType = 'daily';
 
 function selectTimeType(type, element){
@@ -1113,9 +1133,7 @@ function selectTimeType(type, element){
       placeholder="Pilih tanggal">
   `;
 
-  flatpickr("#dailyInput",{
-    dateFormat:"d F Y"
-  });
+  initFlatpickr();
 
 }
 
@@ -1161,9 +1179,7 @@ function selectTimeType(type, element){
 renderTasks();
 updateStats();
 
-flatpickr("#dailyInput",{
-  dateFormat:"d F Y"
-});
+initFlatpickr();
   
 </script>
 
