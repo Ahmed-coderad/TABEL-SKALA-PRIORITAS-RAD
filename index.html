@@ -1126,53 +1126,56 @@ function selectTimeType(type, element){
     document.getElementById('timeInputWrapper');
 
   // HARIAN
-  // HARIAN
-  if(task.timeType === 'daily'){
+  if(type === 'daily'){
 
-    const date =
-      new Date(task.timeValue);
+    wrapper.innerHTML = `
+      <input
+        type="text"
+        id="dailyInput"
+        placeholder="Pilih tanggal">
+    `;
 
-    return date.toLocaleDateString(
-      'id-ID',
-      {
-        day:'numeric',
-        month:'long',
-        year:'numeric'
-      }
-    );
+    initFlatpickr();
 
   }
 
   // BULANAN
-  else if(task.timeType === 'monthly'){
+  else if(type === 'monthly'){
 
-    const [year,month] =
-      task.timeValue.split('-');
-
-    const monthNames = [
-      "Januari","Februari","Maret",
-      "April","Mei","Juni",
-      "Juli","Agustus","September",
-      "Oktober","November","Desember"
-    ];
-
-    return `${monthNames[month-1]} ${year}`;
+    wrapper.innerHTML = `
+      <input
+        type="month"
+        id="monthlyInput">
+    `;
 
   }
 
   // TAHUNAN
   else{
 
-    return `Tahun ${task.timeValue}`;
+    let yearOptions = '';
 
-  }
+    const currentYear =
+      new Date().getFullYear();
 
-}
+    for(let y=currentYear; y<=currentYear+10; y++){
+
+      yearOptions += `
+        <option value="${y}">
+          ${y}
+        </option>
+      `;
+
+    }
 
     wrapper.innerHTML = `
       <select id="yearlyInput">
-        <option value="">Pilih Tahun</option>
+        <option value="">
+          Pilih Tahun
+        </option>
+
         ${yearOptions}
+
       </select>
     `;
 
