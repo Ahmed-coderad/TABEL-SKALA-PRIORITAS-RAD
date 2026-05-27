@@ -1195,39 +1195,121 @@ function exportData(){
     50
   );
 
+    doc.setFontSize(12);
+
+doc.text(
+  `Total Aktivitas : ${tasks.length}`,
+  14,
+  60
+);
+
+doc.text(
+  `Aktivitas Penting : ${
+    tasks.filter(t =>
+      t.type === 'q1' ||
+      t.type === 'q2'
+    ).length
+  }`,
+  14,
+  68
+);
+
+doc.text(
+  `Aktivitas Mendesak : ${
+    tasks.filter(t =>
+      t.type === 'q1' ||
+      t.type === 'q3'
+    ).length
+  }`,
+  14,
+  76
+);
+
+doc.text(
+  `Aktivitas Selesai : ${
+    tasks.filter(t =>
+      t.completed
+    ).length
+  }`,
+  14,
+  84
+);
+
   // Data tabel
-  const data = [
-    ["Nama","Jabatan","Status"],
-    ["Ahmed","Supervisor","Aktif"],
-    ["Budi","Staff","Aktif"],
-    ["Siti","Admin","Aktif"]
-  ];
+  const data = tasks.map(task => [
+
+  task.name,
+
+  task.desc || "-",
+
+  formatTime(task),
+
+  task.type.toUpperCase(),
+
+  task.completed
+    ? "Selesai"
+    : "Belum"
+
+]);
 
   doc.autoTable({
 
-    startY:60,
+  startY:95,
 
-    head:[data[0]],
+  head:[[
+    "Aktivitas",
+    "Deskripsi",
+    "Waktu",
+    "Kuadran",
+    "Status"
+  ]],
 
-    body:data.slice(1),
+  body:data,
 
-    theme:'grid',
+  theme:'grid',
 
-    headStyles:{
-      fillColor:BLUE,
-      textColor:[255,255,255],
-      halign:'center'
-    },
+  headStyles:{
+    fillColor:BLUE,
+    textColor:[255,255,255],
+    halign:'center'
+  },
 
-    alternateRowStyles:{
-      fillColor:[245,245,245]
-    },
+  alternateRowStyles:{
+    fillColor:[245,245,245]
+  },
 
-    styles:{
-      fontSize:10
-    }
+  styles:{
+    fontSize:9,
+    cellPadding:3
+  }
 
-  });
+});
+
+const finalY =
+  doc.lastAutoTable.finalY + 15;
+
+doc.setFontSize(12);
+
+doc.setTextColor(...BLUE);
+
+doc.text(
+  "Analisis Prioritas",
+  14,
+  finalY
+);
+
+doc.setTextColor(0);
+
+doc.setFontSize(10);
+
+const analysis =
+  generateAnalysis();
+
+doc.text(
+  analysis,
+  14,
+  finalY + 10
+);
 
   // Footer
   const pageHeight =
