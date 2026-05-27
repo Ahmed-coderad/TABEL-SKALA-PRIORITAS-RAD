@@ -1110,6 +1110,7 @@ function exportData(){
   function initFlatpickr(){
 
   flatpickr("#dailyInput",{
+    minDate:"today",
     dateFormat:"Y-m-d",
     altInput:true,
     altFormat:"d F Y"
@@ -1278,7 +1279,6 @@ task.name,
 
 ]);
 
-  doc.autoTable({
 doc.autoTable({
 
   startY:95,
@@ -1345,8 +1345,13 @@ doc.autoTable({
 
 });
 
-const finalY =
-  doc.lastAutoTable.finalY + 15;
+let finalY =
+doc.lastAutoTable.finalY + 15;
+
+if(finalY > 250){
+  doc.addPage();
+  finalY = 20;
+}
 
 doc.setFontSize(12);
 
