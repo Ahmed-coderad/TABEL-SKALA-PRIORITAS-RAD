@@ -8,9 +8,11 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  
 <style>
 
 :root{
@@ -337,6 +339,56 @@ button{
   -moz-appearance:auto;
 }
 
+  .time-type{
+  display:flex;
+  gap:10px;
+  margin-bottom:15px;
+}
+
+.time-btn{
+  flex:1;
+  padding:14px;
+  border-radius:16px;
+  background:#eef4f8;
+  color:var(--dark);
+  font-weight:600;
+  transition:.3s;
+}
+
+.time-btn.active{
+  background:linear-gradient(
+    135deg,
+    var(--primary),
+    #0d5c90
+  );
+  color:white;
+}
+
+.time-btn:hover{
+  transform:translateY(-2px);
+}
+
+#timeInputWrapper input,
+#timeInputWrapper select{
+  margin-top:10px;
+}
+
+  .flatpickr-calendar{
+  border:none !important;
+  border-radius:24px !important;
+  box-shadow:0 15px 40px rgba(0,0,0,.12) !important;
+  overflow:hidden;
+}
+
+.flatpickr-day.selected{
+  background:var(--primary) !important;
+  border-color:var(--primary) !important;
+}
+
+.flatpickr-day:hover{
+  background:#e8f3ff !important;
+    }
+  
 @keyframes fade{
   from{
     opacity:0;
@@ -446,23 +498,38 @@ button{
       </div>
 
       <div class="form-group">
-  <label>Tanggal</label>
 
-  <div class="date-grid">
+  <label>Waktu Keperluan</label>
 
-    <select id="taskDate">
-      <option value="">Tanggal</option>
-    </select>
+  <div class="time-type">
 
-    <select id="taskMonth">
-      <option value="">Bulan</option>
-    </select>
+    <button type="button"
+      class="time-btn active"
+      onclick="selectTimeType('daily', this)">
+      Harian
+    </button>
 
-    <select id="taskYear">
-      <option value="">Tahun</option>
-    </select>
+    <button type="button"
+      class="time-btn"
+      onclick="selectTimeType('monthly', this)">
+      Bulanan
+    </button>
+
+    <button type="button"
+      class="time-btn"
+      onclick="selectTimeType('yearly', this)">
+      Tahunan
+    </button>
 
   </div>
+
+  <div id="timeInputWrapper">
+
+    <!-- Harian -->
+    <input type="date" id="dailyInput">
+
+  </div>
+
 </div>
 
       <div class="form-group">
@@ -626,6 +693,38 @@ function updateStats(){
 
 }
 
+  function formatTime(task){
+
+  if(task.timeType === 'daily'){
+
+    return task.timeValue;
+
+  }
+
+  else if(task.timeType === 'monthly'){
+
+    const [year,month] =
+      task.timeValue.split('-');
+
+    const monthNames = [
+      "Januari","Februari","Maret",
+      "April","Mei","Juni",
+      "Juli","Agustus","September",
+      "Oktober","November","Desember"
+    ];
+
+    return `${monthNames[month-1]} ${year}`;
+
+  }
+
+  else{
+
+    return `Tahun ${task.timeValue}`;
+
+  }
+
+  }
+
 function renderTasks(){
 
   ['q1','q2','q3','q4'].forEach(id=>{
@@ -649,7 +748,7 @@ function renderTasks(){
       </small>
 
       <small>
-        📅 ${task.date} ${task.month} ${task.year}
+        📅 ${formatTime(task)}
       </small>
 
       <div class="task-footer">
@@ -718,15 +817,38 @@ function addTask(){
   const type =
   document.getElementById("taskType").value;
 
-  const date =
-document.getElementById("taskDate").value;
+  let timeValue = '';
 
-const month =
-document.getElementById("taskMonth").value;
+if(selectedTimeType === 'daily'){
 
-const year =
-document.getElementById("taskYear").value;
+  timeValue =
+    document.getElementById('dailyInput').value;
 
+}
+
+else if(selectedTimeType === 'monthly'){
+
+  timeValue =
+    document.getElementById('monthlyInput').value;
+
+}
+
+else{
+
+  timeValue =
+    document.getElementById('yearlyInput').value;
+
+}
+
+if(!timeValue){
+
+  showToast(
+    "Waktu keperluan wajib diisi",
+    "error"
+  );
+
+  return;
+  }
   if(name === ''){
 
    showToast("Nama aktivitas wajib diisi","error");
@@ -759,9 +881,8 @@ if(!date || !month || !year){
     desc,
     type,
     completed:false,
-    date,
-    month,
-    year
+    timeType:selectedTimeType,
+    timeValue
 
   };
 
@@ -915,67 +1036,6 @@ ${recommendation}
 
 }
 
-function populateDate(){
-
-  const dateSelect =
-    document.getElementById("taskDate");
-
-  const monthSelect =
-    document.getElementById("taskMonth");
-
-  const yearSelect =
-    document.getElementById("taskYear");
-
-  // Reset option awal
-  dateSelect.innerHTML =
-    '<option value="">Tanggal</option>';
-
-  monthSelect.innerHTML =
-    '<option value="">Bulan</option>';
-
-  yearSelect.innerHTML =
-    '<option value="">Tahun</option>';
-
-  const months = [
-    "Januari","Februari","Maret","April",
-    "Mei","Juni","Juli","Agustus",
-    "September","Oktober","November","Desember"
-  ];
-
-  // Isi tanggal
-  for(let i = 1; i <= 31; i++){
-
-    dateSelect.innerHTML +=
-      `<option value="${i}">
-        ${i}
-      </option>`;
-
-  }
-
-  // Isi bulan
-  months.forEach((month)=>{
-
-    monthSelect.innerHTML +=
-      `<option value="${month}">
-        ${month}
-      </option>`;
-
-  });
-
-  // Isi tahun
-  const currentYear =
-    new Date().getFullYear();
-
-  for(let y = currentYear; y <= currentYear + 10; y++){
-
-    yearSelect.innerHTML +=
-      `<option value="${y}">
-        ${y}
-      </option>`;
-
-  }
-
-}
 
 function resetForm(){
 
@@ -1028,10 +1088,82 @@ function exportData(){
 
 }
 
+  let selectedTimeType = 'daily';
+
+function selectTimeType(type, element){
+
+  selectedTimeType = type;
+
+  document
+    .querySelectorAll('.time-btn')
+    .forEach(btn=>btn.classList.remove('active'));
+
+  element.classList.add('active');
+
+  const wrapper =
+    document.getElementById('timeInputWrapper');
+
+  // HARIAN
+  if(type === 'daily'){
+
+  wrapper.innerHTML = `
+    <input
+      type="text"
+      id="dailyInput"
+      placeholder="Pilih tanggal">
+  `;
+
+  flatpickr("#dailyInput",{
+    dateFormat:"d F Y"
+  });
+
+}
+
+  // BULANAN
+  else if(type === 'monthly'){
+
+    wrapper.innerHTML = `
+      <input type="month" id="monthlyInput">
+    `;
+
+  }
+
+  // TAHUNAN
+  else{
+
+    let yearOptions = '';
+
+    const currentYear =
+      new Date().getFullYear();
+
+    for(let y=currentYear; y<=currentYear+10; y++){
+
+      yearOptions += `
+        <option value="${y}">
+          ${y}
+        </option>
+      `;
+
+    }
+
+    wrapper.innerHTML = `
+      <select id="yearlyInput">
+        <option value="">Pilih Tahun</option>
+        ${yearOptions}
+      </select>
+    `;
+
+  }
+
+}
+  
 // Jalankan saat website dibuka
-populateDate();
 renderTasks();
 updateStats();
+
+flatpickr("#dailyInput",{
+  dateFormat:"d F Y"
+});
   
 </script>
 
