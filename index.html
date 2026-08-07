@@ -18,9 +18,6 @@ href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <!-- AutoTable -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 
-<!-- Script utama -->
-<script src="script.js"></script>
-  
 <style>
 
 :root{
@@ -129,10 +126,6 @@ body{
   margin-top:25px;
 }
 
-  .sidebar{
-  width:100%;
-}
-
 .content-area{
   display:flex;
   flex-direction:column;
@@ -155,12 +148,6 @@ body{
 
 .form-group{
   margin-bottom:18px;
-}
-
-  .date-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:10px;
 }
 
 label{
@@ -199,7 +186,7 @@ button{
   cursor:pointer;
 }
 
-  .button-group{
+.button-group{
   display:flex;
   flex-direction:column;
   gap:12px;
@@ -228,18 +215,12 @@ button{
 
 .btn::before{
   content:'';
-
   position:absolute;
-
   top:0;
   left:-100%;
-
   width:100%;
   height:100%;
-
-  background:
-  rgba(255,255,255,.2);
-
+  background:rgba(255,255,255,.2);
   transition:.5s;
 }
 
@@ -374,14 +355,14 @@ button{
   font-size:.9rem;
 }
 
-  select{
+select{
   cursor:pointer;
   appearance:auto;
   -webkit-appearance:auto;
   -moz-appearance:auto;
 }
 
-  .time-type{
+.time-type{
   display:flex;
   gap:10px;
   margin-bottom:15px;
@@ -398,11 +379,7 @@ button{
 }
 
 .time-btn.active{
-  background:linear-gradient(
-    135deg,
-    var(--primary),
-    #0d5c90
-  );
+  background:linear-gradient(135deg,var(--primary),#0d5c90);
   color:white;
 }
 
@@ -415,7 +392,7 @@ button{
   margin-top:10px;
 }
 
-  .flatpickr-calendar{
+.flatpickr-calendar{
   border:none !important;
   border-radius:24px !important;
   box-shadow:0 15px 40px rgba(0,0,0,.12) !important;
@@ -429,75 +406,45 @@ button{
 
 .flatpickr-day:hover{
   background:#e8f3ff !important;
-    }
+}
 
 .planner-header{
-
   background:rgba(255,255,255,.8);
-
   backdrop-filter:blur(12px);
-
   border:1px solid rgba(255,255,255,.5);
-
   border-radius:30px;
-
   padding:35px;
-
   text-align:center;
-
-  box-shadow:
-  0 10px 30px rgba(0,0,0,.08);
-
+  box-shadow:0 10px 30px rgba(0,0,0,.08);
 }
 
 .planner-label{
-
   display:block;
-
   font-size:.95rem;
-
   font-weight:600;
-
   color:var(--primary);
-
   margin-bottom:12px;
-
 }
 
 .planner-input{
-
   max-width:500px;
-
   margin:auto;
-
   text-align:center;
-
   font-size:1.1rem;
-
   font-weight:600;
-
 }
 
 #plannerTitle{
-
   margin-top:20px;
-
   color:var(--primary);
-
   font-size:2rem;
-
   font-weight:800;
-
   line-height:1.4;
-
   text-align:center;
-
   letter-spacing:.5px;
-
   word-break:break-word;
-
 }
-  
+
 @keyframes fade{
   from{
     opacity:0;
@@ -570,31 +517,8 @@ button{
     flex-direction:column;
   }
 
-  .planner-title{
-    font-size:1.3rem;
-  }
-
   .planner-input{
     font-size:1rem;
-  }
-
-}
-@media(max-width:650px){
-
-  body{
-    padding:15px;
-  }
-
-  .header{
-    padding:30px;
-  }
-
-  .header h1{
-    font-size:2rem;
-  }
-
-  .stats{
-    grid-template-columns:1fr;
   }
 
 }
@@ -642,163 +566,163 @@ button{
 
   </div>
 
-<div class="main">
-  
-  <!-- CONTENT -->
-  <div class="content-area">
+  <div class="main">
 
-    <!-- NAMA PLANNER -->
-    <div class="planner-header">
+    <!-- CONTENT -->
+    <div class="content-area">
 
-      <label class="planner-label">
-        Project Tabel Skala Prioritas
-      </label>
+      <!-- NAMA PLANNER -->
+      <div class="planner-header">
 
-      <input
-        type="text"
-        id="plannerName"
-        class="planner-input"
-        placeholder="Contoh: Prioritas Organisasi BEM 2026"
-        oninput="updatePlannerTitle()"
-      >
+        <label class="planner-label">
+          Project Tabel Skala Prioritas
+        </label>
 
-      <h2 id="plannerTitle">
-        Belum Ada Nama Planner
-      </h2>
+        <input
+          type="text"
+          id="plannerName"
+          class="planner-input"
+          placeholder="Contoh: Prioritas Organisasi BEM 2026"
+          oninput="updatePlannerTitle()"
+        >
 
-    </div>
+        <h2 id="plannerTitle">
+          Belum Ada Nama Planner
+        </h2>
 
-</div>
-
-    <div class="card">
-
-      <h2 class="card-title">
-        Tambah Prioritas
-      </h2>
-
-      <div class="form-group">
-        <label>Nama Aktivitas</label>
-        <input type="text" id="taskName" placeholder="Contoh: Menyelesaikan proposal">
       </div>
 
-      <div class="form-group">
-        <label>Deskripsi Aktivitas</label>
-        <textarea id="taskDesc" placeholder="Tulis detail aktivitas..."></textarea>
-      </div>
+      <div class="card">
 
-      <div class="form-group">
+        <h2 class="card-title">
+          Tambah Prioritas
+        </h2>
 
-  <label>Waktu Keperluan</label>
+        <div class="form-group">
+          <label>Nama Aktivitas</label>
+          <input type="text" id="taskName" placeholder="Contoh: Menyelesaikan proposal">
+        </div>
 
-  <div class="time-type">
+        <div class="form-group">
+          <label>Deskripsi Aktivitas</label>
+          <textarea id="taskDesc" placeholder="Tulis detail aktivitas..."></textarea>
+        </div>
 
-    <button type="button"
-      class="time-btn active"
-      onclick="selectTimeType('daily', this)">
-      Harian
-    </button>
+        <div class="form-group">
 
-    <button type="button"
-      class="time-btn"
-      onclick="selectTimeType('monthly', this)">
-      Bulanan
-    </button>
+          <label>Waktu Keperluan</label>
 
-    <button type="button"
-      class="time-btn"
-      onclick="selectTimeType('yearly', this)">
-      Tahunan
-    </button>
+          <div class="time-type">
 
-  </div>
+            <button type="button"
+              class="time-btn active"
+              onclick="selectTimeType('daily', this)">
+              Harian
+            </button>
 
-  <div id="timeInputWrapper">
+            <button type="button"
+              class="time-btn"
+              onclick="selectTimeType('monthly', this)">
+              Bulanan
+            </button>
 
-    <!-- Harian -->
-    <input
-type="text"
-id="dailyInput"
-placeholder="Pilih tanggal">
-  </div>
+            <button type="button"
+              class="time-btn"
+              onclick="selectTimeType('yearly', this)">
+              Tahunan
+            </button>
 
-</div>
+          </div>
 
-      <div class="form-group">
-        <label>Kategori Prioritas</label>
-        <select id="taskType">
+          <div id="timeInputWrapper">
 
-          <option value="q1">
-            Penting & Mendesak
-          </option>
+            <!-- Harian -->
+            <input
+              type="text"
+              id="dailyInput"
+              placeholder="Pilih tanggal">
+          </div>
 
-          <option value="q2">
-            Penting Tidak Mendesak
-          </option>
+        </div>
 
-          <option value="q3">
-            Tidak Penting Tapi Mendesak
-          </option>
+        <div class="form-group">
+          <label>Kategori Prioritas</label>
+          <select id="taskType">
 
-          <option value="q4">
-            Tidak Penting & Tidak Mendesak
-          </option>
+            <option value="q1">
+              Penting & Mendesak
+            </option>
 
-        </select>
-      </div>
+            <option value="q2">
+              Penting Tidak Mendesak
+            </option>
 
-      <div class="button-group">
+            <option value="q3">
+              Tidak Penting Tapi Mendesak
+            </option>
 
-  <button class="btn" onclick="addTask()">
-    + Tambah Prioritas
-  </button>
+            <option value="q4">
+              Tidak Penting & Tidak Mendesak
+            </option>
 
-  <button class="btn save-btn" onclick="saveAllData()">
-    Simpan
-  </button>
+          </select>
+        </div>
 
-  <button class="btn reset-btn" onclick="resetForm()">
-    Reset
-  </button>
+        <div class="button-group">
 
-  <button class="btn" onclick="exportPDF()">
-  Export PDF
-  </button>
+          <button class="btn" onclick="addTask()">
+            + Tambah Prioritas
+          </button>
 
-</div>
-    </div>
+          <button class="btn save-btn" onclick="saveAllData()">
+            Simpan
+          </button>
 
-    <div class="priority-grid">
+          <button class="btn reset-btn" onclick="resetForm()">
+            Reset
+          </button>
 
-      <div class="quadrant q1">
-        <h3>🔥 Kuadran 1</h3>
-        <p>Penting & Mendesak</p>
-        <div id="q1">
-          <div class="empty">Belum ada aktivitas</div>
+          <button class="btn" onclick="exportPDF()">
+            Export PDF
+          </button>
+
         </div>
       </div>
 
-      <div class="quadrant q2">
-        <h3>🌱 Kuadran 2</h3>
-        <p>Penting Tidak Mendesak</p>
-        <div id="q2">
-          <div class="empty">Belum ada aktivitas</div>
-        </div>
-      </div>
+      <div class="priority-grid">
 
-      <div class="quadrant q3">
-        <h3>⚡ Kuadran 3</h3>
-        <p>Tidak Penting Tapi Mendesak</p>
-        <div id="q3">
-          <div class="empty">Belum ada aktivitas</div>
+        <div class="quadrant q1">
+          <h3>🔥 Kuadran 1</h3>
+          <p>Penting & Mendesak</p>
+          <div id="q1">
+            <div class="empty">Belum ada aktivitas</div>
+          </div>
         </div>
-      </div>
 
-      <div class="quadrant q4">
-        <h3>🛋️ Kuadran 4</h3>
-        <p>Tidak Penting & Tidak Mendesak</p>
-        <div id="q4">
-          <div class="empty">Belum ada aktivitas</div>
+        <div class="quadrant q2">
+          <h3>🌱 Kuadran 2</h3>
+          <p>Penting Tidak Mendesak</p>
+          <div id="q2">
+            <div class="empty">Belum ada aktivitas</div>
+          </div>
         </div>
+
+        <div class="quadrant q3">
+          <h3>⚡ Kuadran 3</h3>
+          <p>Tidak Penting Tapi Mendesak</p>
+          <div id="q3">
+            <div class="empty">Belum ada aktivitas</div>
+          </div>
+        </div>
+
+        <div class="quadrant q4">
+          <h3>🛋️ Kuadran 4</h3>
+          <p>Tidak Penting & Tidak Mendesak</p>
+          <div id="q4">
+            <div class="empty">Belum ada aktivitas</div>
+          </div>
+        </div>
+
       </div>
 
     </div>
@@ -825,13 +749,13 @@ https://www.emailjs.com/
 - Email Service
 - Email Template
 
-3. Ganti:
+3. Ganti string di bawah dengan:
 YOUR_PUBLIC_KEY
 YOUR_SERVICE_ID
 YOUR_TEMPLATE_ID
 */
 
-emailjs.init(Public Key EmailJS);
+emailjs.init("YOUR_PUBLIC_KEY");
 
 /* ========================================= */
 
@@ -847,7 +771,9 @@ JSON.parse(
 
 let tasks =
 plannerData.tasks || [];
-  
+
+let selectedTimeType = 'daily';
+
 function saveTasks(){
 
   plannerData = {
@@ -911,7 +837,7 @@ function updateStats(){
 
 }
 
-  function formatTime(task){
+function formatTime(task){
 
   if(task.timeType === 'daily'){
 
@@ -941,7 +867,7 @@ function updateStats(){
 
   }
 
-  }
+}
 
 function renderTasks(){
 
@@ -1023,7 +949,7 @@ function renderTasks(){
   });
 
 }
-  
+
 function addTask(){
 
   const name =
@@ -1037,108 +963,56 @@ function addTask(){
 
   let timeValue = '';
 
-if(selectedTimeType==="daily"){
+  if(selectedTimeType === "daily"){
 
-    timeValue=document.getElementById("dailyInput").value;
+    timeValue = document.getElementById("dailyInput").value;
 
-}
-
-else if(selectedTimeType==="monthly"){
-
-    timeValue=document.getElementById("monthlyInput").value;
-
-    const now=new Date();
-
-    const current=
-    `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}`;
-
-    if(timeValue<current){
-
-        showToast("Bulan tidak boleh sebelum bulan sekarang","error");
-
-        return;
-
-    }
-
-}
-
-else{
-
-    timeValue=document.getElementById("yearlyInput").value;
-
-    const currentYear=new Date().getFullYear();
-
-    if(parseInt(timeValue)<currentYear){
-
-        showToast("Tahun tidak boleh kurang dari tahun sekarang","error");
-
-        return;
-
-    }
-
-}
-const now=new Date();
-
-const current=
-`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-
-if(timeValue<current){
-
-showToast(
-"Bulan tidak boleh sebelum bulan sekarang",
-"error"
-);
-
-return;
-
-}
-
-}
-
-else{
-
-  timeValue =
-    document.getElementById('yearlyInput').value;
-const currentYear =
-new Date().getFullYear();
-
-if(
-selectedTimeType==="yearly" &&
-parseInt(timeValue)<currentYear
-){
-showToast(
-"Tahun tidak boleh kurang dari tahun sekarang",
-"error"
-);
-return;
-}
-
-if(!timeValue){
-
-  showToast(
-    "Waktu keperluan wajib diisi",
-    "error"
-  );
-
-  return;
   }
+  else if(selectedTimeType === "monthly"){
+
+    timeValue = document.getElementById("monthlyInput").value;
+
+    const now = new Date();
+    const current =
+      `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}`;
+
+    if(timeValue < current){
+      showToast("Bulan tidak boleh sebelum bulan sekarang","error");
+      return;
+    }
+
+  }
+  else{
+
+    timeValue = document.getElementById("yearlyInput").value;
+
+    const currentYear = new Date().getFullYear();
+
+    if(parseInt(timeValue) < currentYear){
+      showToast("Tahun tidak boleh kurang dari tahun sekarang","error");
+      return;
+    }
+
+  }
+
+  if(!timeValue){
+    showToast("Waktu keperluan wajib diisi","error");
+    return;
+  }
+
   if(name === ''){
-
-   showToast("Nama aktivitas wajib diisi","error");
-   return;
-
-}
+    showToast("Nama aktivitas wajib diisi","error");
+    return;
+  }
 
   const duplicate = tasks.find(t =>
-  t.name.toLowerCase() === name.toLowerCase()
-);
+    t.name.toLowerCase() === name.toLowerCase()
+  );
 
-if(duplicate){
-
-   showToast("Aktivitas sudah ada","error");
-   return;
-
-}
+  if(duplicate){
+    showToast("Aktivitas sudah ada","error");
+    return;
+  }
 
   const task = {
 
@@ -1177,12 +1051,11 @@ function sendEmail(task, analysis){
       task_desc:task.desc,
       task_type:task.type,
       to_email:"rizkyahmeddarmawan98@gmail.com",
-planner_name:
-document.getElementById(
-"plannerName"
-).value,
+      planner_name:
+      document.getElementById(
+        "plannerName"
+      ).value,
 
-      
       analysis:analysis
     }
   )
@@ -1209,7 +1082,7 @@ function sendWhatsAppSummary(){
   `Total Aktivitas: ${tasks.length}\n\n`;
 
   tasks.slice(0,20).forEach((task,index)=>{
-    
+
     message +=
 `${index+1}. ${task.name}
 📅 ${formatTime(task)}
@@ -1230,7 +1103,7 @@ function sendWhatsAppSummary(){
 
 }
 
-  function generateAnalysis(){
+function generateAnalysis(){
 
   const q1 =
   tasks.filter(t=>t.type==='q1').length;
@@ -1338,13 +1211,12 @@ function resetForm(){
       placeholder="Pilih tanggal">
   `;
 
-  flatpickr("#dailyInput",{
-    dateFormat:"d F Y"
-  });
+  initFlatpickr();
 
   showToast("Form berhasil direset");
 
-  }
+}
+
 function saveAllData(){
 
   const analysis = generateAnalysis();
@@ -1384,7 +1256,7 @@ function exportData(){
 
 }
 
-  function initFlatpickr(){
+function initFlatpickr(){
 
   flatpickr("#dailyInput",{
     minDate:"today",
@@ -1393,9 +1265,9 @@ function exportData(){
     altFormat:"d F Y"
   });
 
-  }
+}
 
-  async function exportPDF(){
+async function exportPDF(){
 
   const { jsPDF } = window.jspdf;
 
@@ -1419,20 +1291,21 @@ function exportData(){
 
   doc.text("LAPORAN DATA",14,14);
   doc.setFontSize(10);
-    const plannerName =
-document.getElementById(
-  "plannerName"
-).value || "Tanpa Nama";
 
-doc.setFont("helvetica","bold");  
-doc.setFontSize(13);
+  const plannerName =
+  document.getElementById(
+    "plannerName"
+  ).value || "Tanpa Nama";
 
-doc.text(
-  plannerName,
-  14,
-  23
-);
-    
+  doc.setFont("helvetica","bold");
+  doc.setFontSize(13);
+
+  doc.text(
+    plannerName,
+    14,
+    23
+  );
+
   // Garis aksen
   doc.setDrawColor(...YELLOW);
 
@@ -1473,11 +1346,11 @@ doc.text(
   new Date().getFullYear()
 }`;
 
-doc.text(
-  `Nomor Surat : ${nomorSurat}`,
-  14,
-  42
-);
+  doc.text(
+    `Nomor Surat : ${nomorSurat}`,
+    14,
+    42
+  );
 
   doc.text(
     `Tanggal Cetak : ${
@@ -1487,210 +1360,199 @@ doc.text(
     50
   );
 
-    doc.text(
-`Periode Planner : ${periode}`,
-14,
-58
-);
+  doc.text(
+    `Periode Planner : ${periode}`,
+    14,
+    58
+  );
 
-doc.text(
-  "Pembuat : Rizky Ahmed Darmawan",
-  130,
-  50
-);
+  doc.text(
+    "Pembuat : Rizky Ahmed Darmawan",
+    130,
+    50
+  );
 
-    doc.setFontSize(12);
+  doc.setFontSize(12);
 
-doc.text(
-  `Total Aktivitas : ${tasks.length}`,
-  14,
-  68
-);
+  doc.text(
+    `Total Aktivitas : ${tasks.length}`,
+    14,
+    68
+  );
 
-doc.text(
-  `Aktivitas Penting : ${
-    tasks.filter(t =>
-      t.type === 'q1' ||
-      t.type === 'q2'
-    ).length
-  }`,
-  14,
-  76
-);
+  doc.text(
+    `Aktivitas Penting : ${
+      tasks.filter(t =>
+        t.type === 'q1' ||
+        t.type === 'q2'
+      ).length
+    }`,
+    14,
+    76
+  );
 
-doc.text(
-  `Aktivitas Mendesak : ${
-    tasks.filter(t =>
-      t.type === 'q1' ||
-      t.type === 'q3'
-    ).length
-  }`,
-  14,
-  84
-);
+  doc.text(
+    `Aktivitas Mendesak : ${
+      tasks.filter(t =>
+        t.type === 'q1' ||
+        t.type === 'q3'
+      ).length
+    }`,
+    14,
+    84
+  );
 
-doc.text(
-  `Aktivitas Selesai : ${
-    tasks.filter(t =>
-      t.completed
-    ).length
-  }`,
-  14,
-  92
-);
+  doc.text(
+    `Aktivitas Selesai : ${
+      tasks.filter(t =>
+        t.completed
+      ).length
+    }`,
+    14,
+    92
+  );
 
   // Data tabel
   const sortedTasks = [...tasks].sort((a,b)=>{
 
-  const order = {
-    q1:1,
-    q2:2,
-    q3:3,
-    q4:4
-  };
+    const order = {
+      q1:1,
+      q2:2,
+      q3:3,
+      q4:4
+    };
 
-  return order[a.type] - order[b.type];
+    return order[a.type] - order[b.type];
 
-});
+  });
 
-const data = sortedTasks.map((task,index) => [
-  index + 1,
-task.name,
+  const data = sortedTasks.map((task,index) => [
+    index + 1,
+    task.name,
+    task.desc || "-",
+    formatTime(task),
+    task.type.toUpperCase(),
+    task.completed
+      ? "Selesai"
+      : "Belum"
+  ]);
 
-  task.desc || "-",
+  doc.autoTable({
 
-  formatTime(task),
+    startY:103,
 
-  task.type.toUpperCase(),
+    head:[[
+      "No",
+      "Aktivitas",
+      "Deskripsi",
+      "Waktu",
+      "Kuadran",
+      "Status"
+    ]],
 
-  task.completed
-    ? "Selesai"
-    : "Belum"
+    body:data,
 
-]);
+    theme:'grid',
 
-doc.autoTable({
+    headStyles:{
+      fillColor:BLUE,
+      textColor:[255,255,255],
+      halign:'center'
+    },
 
-  startY:103,
+    alternateRowStyles:{
+      fillColor:[245,245,245]
+    },
 
-  head:[[
-    "No",
-    "Aktivitas",
-    "Deskripsi",
-    "Waktu",
-    "Kuadran",
-    "Status"
-  ]],
+    styles:{
+      fontSize:8,
+      cellPadding:3,
+      overflow:'linebreak'
+    },
 
-  body:data,
+    margin:{ left:10, right:10 },
 
-  theme:'grid',
+    tableWidth:'auto',
 
-  headStyles:{
-    fillColor:BLUE,
-    textColor:[255,255,255],
-    halign:'center'
-  },
+    columnStyles:{
+      0:{cellWidth:10},
+      1:{cellWidth:35},
+      2:{cellWidth:55},
+      3:{cellWidth:28},
+      4:{cellWidth:22},
+      5:{cellWidth:22}
+    },
 
-  alternateRowStyles:{
-    fillColor:[245,245,245]
-  },
+    didParseCell: function(data){
 
-  styles:{
-    fontSize:8,
-    cellPadding:3
-    overflow:"linebreak"
-  },
+      if(data.column.index === 5){
 
-margin:{ left:10, right:10 },
+        const status = data.cell.raw;
 
-tableWidth:'auto',
+        // STATUS BELUM
+        if(status === "Belum"){
 
-styles:{
-  fontSize:8,
-  cellPadding:3,
-  overflow:'linebreak'
-},
+          data.cell.styles.textColor =
+          [252,193,2];
 
-columnStyles:{
-  0:{cellWidth:10},
-  1:{cellWidth:35},
-  2:{cellWidth:55},
-  3:{cellWidth:28},
-  4:{cellWidth:22},
-  5:{cellWidth:22}
-},
-  
-  didParseCell: function(data){
+          data.cell.styles.fontStyle =
+          'bold';
 
-    if(data.column.index === 5){
+        }
 
-      const status = data.cell.raw;
+        // STATUS SELESAI
+        else if(status === "Selesai"){
 
-      // STATUS BELUM
-      if(status === "Belum"){
+          data.cell.styles.textColor =
+          [34,197,94];
 
-        data.cell.styles.textColor =
-        [252,193,2];
+          data.cell.styles.fontStyle =
+          'bold';
 
-        data.cell.styles.fontStyle =
-        'bold';
-
-      }
-
-      // STATUS SELESAI
-      else if(status === "Selesai"){
-
-        data.cell.styles.textColor =
-        [34,197,94];
-
-        data.cell.styles.fontStyle =
-        'bold';
+        }
 
       }
 
     }
 
+  });
+
+  let finalY =
+  doc.lastAutoTable.finalY + 15;
+
+  if(finalY > 250){
+    doc.addPage();
+    finalY = 20;
   }
 
-});
+  doc.setFontSize(12);
 
-let finalY =
-doc.lastAutoTable.finalY + 15;
+  doc.setTextColor(...BLUE);
 
-if(finalY > 250){
-  doc.addPage();
-  finalY = 20;
-}
+  doc.text(
+    "Analisis Prioritas",
+    14,
+    finalY
+  );
 
-doc.setFontSize(12);
+  doc.setTextColor(0);
 
-doc.setTextColor(...BLUE);
+  doc.setFontSize(10);
 
-doc.text(
-  "Analisis Prioritas",
-  14,
-  finalY
-);
+  const analysis =
+    generateAnalysis();
 
-doc.setTextColor(0);
+  const splitAnalysis =
+  doc.splitTextToSize(
+    analysis,
+    180
+  );
 
-doc.setFontSize(10);
-
-const analysis =
-  generateAnalysis();
-
-const splitAnalysis =
-doc.splitTextToSize(
-  analysis,
-  180
-);
-
-doc.text(
-  splitAnalysis,
-  14,
-  finalY + 10
-);
+  doc.text(
+    splitAnalysis,
+    14,
+    finalY + 10
+  );
 
   // Footer
   const pageHeight =
@@ -1709,8 +1571,6 @@ doc.text(
   doc.save("Laporan.pdf");
 
 }
-
-  let selectedTimeType = 'daily';
 
 function selectTimeType(type, element){
 
@@ -1744,15 +1604,15 @@ function selectTimeType(type, element){
 
     const today = new Date();
 
-const minMonth =
-`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
+    const minMonth =
+    `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
 
-wrapper.innerHTML = `
-<input
-type="month"
-id="monthlyInput"
-min="${minMonth}">
-`;
+    wrapper.innerHTML = `
+      <input
+        type="month"
+        id="monthlyInput"
+        min="${minMonth}">
+    `;
 
   }
 
@@ -1788,7 +1648,8 @@ min="${minMonth}">
   }
 
 }
-  function updatePlannerTitle(){
+
+function updatePlannerTitle(){
 
   const value =
   document.getElementById(
@@ -1802,21 +1663,21 @@ min="${minMonth}">
 
   saveTasks();
 
-  }
-  
+}
+
 // Jalankan saat website dibuka
 renderTasks();
 updateStats();
 
 initFlatpickr();
 
-  document.getElementById(
+document.getElementById(
   "plannerName"
 ).value =
 plannerData.plannerName || "";
 
 updatePlannerTitle();
-  
+
 </script>
 
 </body>
