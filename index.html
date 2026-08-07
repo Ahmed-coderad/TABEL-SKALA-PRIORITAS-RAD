@@ -1416,6 +1416,9 @@ async function exportPDF(){
   const BLUE = [17,113,177];
   const YELLOW = [252,193,2];
 
+  const pageHeight = doc.internal.pageSize.height;
+  const bottomMargin = 25; // ruang cadangan untuk footer di tiap halaman
+
   // HEADER
   doc.setFillColor(...BLUE);
   doc.rect(0,0,210,28,'F');
@@ -1563,7 +1566,7 @@ async function exportPDF(){
       textColor:BLUE
     },
 
-    margin:{ left:14, right:14 }
+    margin:{ top:20, left:14, right:14, bottom:bottomMargin }
 
   });
 
@@ -1627,7 +1630,7 @@ async function exportPDF(){
       overflow:'linebreak'
     },
 
-    margin:{ left:10, right:10 },
+    margin:{ top:20, left:10, right:10, bottom:bottomMargin },
 
     tableWidth:'auto',
 
@@ -1677,11 +1680,12 @@ async function exportPDF(){
   let finalY =
   doc.lastAutoTable.finalY + 15;
 
-  if(finalY > 250){
+  if(finalY > pageHeight - bottomMargin){
     doc.addPage();
     finalY = 20;
   }
 
+  doc.setFont("helvetica","bold");
   doc.setFontSize(12);
 
   doc.setTextColor(...BLUE);
@@ -1692,6 +1696,7 @@ async function exportPDF(){
     finalY
   );
 
+  doc.setFont("helvetica","normal");
   doc.setTextColor(0);
 
   doc.setFontSize(10);
@@ -1699,31 +1704,59 @@ async function exportPDF(){
   const analysis =
     generateAnalysis();
 
-  const splitAnalysis =
+  const analysisLines =
   doc.splitTextToSize(
     analysis,
     180
   );
 
-  doc.text(
-    splitAnalysis,
-    14,
-    finalY + 10
-  );
+  const lineHeight = 5;
+  let analysisY = finalY + 10;
 
-  // Footer
-  const pageHeight =
-    doc.internal.pageSize.height;
+  analysisLines.forEach(line=>{
 
-  doc.setTextColor(120);
+    // pindah halaman otomatis jika baris berikutnya
+    // akan melewati batas bawah halaman
+    if(analysisY > pageHeight - bottomMargin){
+      doc.addPage();
+      analysisY = 20;
+    }
 
-  doc.setFontSize(9);
+    doc.text(line, 14, analysisY);
+    analysisY += lineHeight;
 
-  doc.text(
-    "Dokumen dibuat otomatis oleh sistem RAD",
-    14,
-    pageHeight - 10
-  );
+  });
+
+  // Nomor halaman & footer di setiap halaman
+  const totalPages =
+    doc.internal.getNumberOfPages();
+
+  for(let i = 1; i <= totalPages; i++){
+
+    doc.setPage(i);
+
+    doc.setDrawColor(...YELLOW);
+    doc.setLineWidth(0.5);
+    doc.line(10, pageHeight - 16, 200, pageHeight - 16);
+
+    doc.setFont("helvetica","normal");
+    doc.setTextColor(120);
+    doc.setFontSize(9);
+
+    doc.text(
+      "Dokumen dibuat otomatis oleh sistem RAD",
+      14,
+      pageHeight - 10
+    );
+
+    doc.text(
+      `Halaman ${i} dari ${totalPages}`,
+      200,
+      pageHeight - 10,
+      { align:'right' }
+    );
+
+  }
 
   doc.save("Laporan.pdf");
 
