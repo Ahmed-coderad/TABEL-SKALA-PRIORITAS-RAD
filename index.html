@@ -1046,6 +1046,23 @@ else if(selectedTimeType === 'monthly'){
 
   timeValue =
     document.getElementById('monthlyInput').value;
+if(selectedTimeType==="monthly"){
+
+const now=new Date();
+
+const current=
+`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+
+if(timeValue<current){
+
+showToast(
+"Bulan tidak boleh sebelum bulan sekarang",
+"error"
+);
+
+return;
+
+}
 
 }
 
@@ -1053,7 +1070,18 @@ else{
 
   timeValue =
     document.getElementById('yearlyInput').value;
+const currentYear =
+new Date().getFullYear();
 
+if(
+selectedTimeType==="yearly" &&
+parseInt(timeValue)<currentYear
+){
+showToast(
+"Tahun tidak boleh kurang dari tahun sekarang",
+"error"
+);
+return;
 }
 
 if(!timeValue){
@@ -1430,6 +1458,12 @@ doc.text(
     50
   );
 
+    doc.text(
+`Periode Planner : ${periode}`,
+14,
+58
+);
+
 doc.text(
   "Pembuat : Rizky Ahmed Darmawan",
   130,
@@ -1678,11 +1712,17 @@ function selectTimeType(type, element){
   // BULANAN
   else if(type === 'monthly'){
 
-    wrapper.innerHTML = `
-      <input
-        type="month"
-        id="monthlyInput">
-    `;
+    const today = new Date();
+
+const minMonth =
+`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
+
+wrapper.innerHTML = `
+<input
+type="month"
+id="monthlyInput"
+min="${minMonth}">
+`;
 
   }
 
