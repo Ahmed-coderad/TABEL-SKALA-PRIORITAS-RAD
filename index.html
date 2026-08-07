@@ -715,8 +715,10 @@ button{
   <div id="timeInputWrapper">
 
     <!-- Harian -->
-    <input type="date" id="dailyInput">
-
+    <input
+type="text"
+id="dailyInput"
+placeholder="Pilih tanggal">
   </div>
 
 </div>
@@ -829,7 +831,7 @@ YOUR_SERVICE_ID
 YOUR_TEMPLATE_ID
 */
 
-emailjs.init("YOUR_PUBLIC_KEY");
+emailjs.init(Public Key EmailJS);
 
 /* ========================================= */
 
@@ -1035,19 +1037,46 @@ function addTask(){
 
   let timeValue = '';
 
-if(selectedTimeType === 'daily'){
+if(selectedTimeType==="daily"){
 
-  timeValue =
-    document.getElementById('dailyInput').value;
+    timeValue=document.getElementById("dailyInput").value;
 
 }
 
-else if(selectedTimeType === 'monthly'){
+else if(selectedTimeType==="monthly"){
 
-  timeValue =
-    document.getElementById('monthlyInput').value;
-if(selectedTimeType==="monthly"){
+    timeValue=document.getElementById("monthlyInput").value;
 
+    const now=new Date();
+
+    const current=
+    `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}`;
+
+    if(timeValue<current){
+
+        showToast("Bulan tidak boleh sebelum bulan sekarang","error");
+
+        return;
+
+    }
+
+}
+
+else{
+
+    timeValue=document.getElementById("yearlyInput").value;
+
+    const currentYear=new Date().getFullYear();
+
+    if(parseInt(timeValue)<currentYear){
+
+        showToast("Tahun tidak boleh kurang dari tahun sekarang","error");
+
+        return;
+
+    }
+
+}
 const now=new Date();
 
 const current=
@@ -1475,7 +1504,7 @@ doc.text(
 doc.text(
   `Total Aktivitas : ${tasks.length}`,
   14,
-  60
+  68
 );
 
 doc.text(
@@ -1486,7 +1515,7 @@ doc.text(
     ).length
   }`,
   14,
-  68
+  76
 );
 
 doc.text(
@@ -1497,7 +1526,7 @@ doc.text(
     ).length
   }`,
   14,
-  76
+  84
 );
 
 doc.text(
@@ -1507,7 +1536,7 @@ doc.text(
     ).length
   }`,
   14,
-  84
+  92
 );
 
   // Data tabel
@@ -1542,7 +1571,7 @@ task.name,
 
 doc.autoTable({
 
-  startY:95,
+  startY:103,
 
   head:[[
     "No",
@@ -1568,8 +1597,9 @@ doc.autoTable({
   },
 
   styles:{
-    fontSize:9,
+    fontSize:8,
     cellPadding:3
+    overflow:"linebreak"
   },
 
 margin:{ left:10, right:10 },
