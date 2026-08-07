@@ -324,6 +324,11 @@ button{
   color:#dc2626;
 }
 
+.edit-btn{
+  background:#dbeafe;
+  color:#1d4ed8;
+}
+
 .empty{
   opacity:.5;
   text-align:center;
@@ -670,7 +675,7 @@ select{
 
         <div class="button-group">
 
-          <button class="btn" onclick="addTask()">
+          <button class="btn" id="addTaskBtn" onclick="addTask()">
             + Tambah Prioritas
           </button>
 
@@ -773,6 +778,7 @@ let tasks =
 plannerData.tasks || [];
 
 let selectedTimeType = 'daily';
+let editingTaskId = null;
 
 function saveTasks(){
 
@@ -901,6 +907,10 @@ function renderTasks(){
           ${task.completed ? 'Undo' : 'Selesai'}
         </button>
 
+        <button class="edit-btn">
+          Edit
+        </button>
+
         <button class="delete-btn">
           Hapus
         </button>
@@ -919,10 +929,21 @@ function renderTasks(){
 
     });
 
+    card.querySelector(".edit-btn")
+    .addEventListener("click",()=>{
+
+      editTask(task.id);
+
+    });
+
     card.querySelector(".delete-btn")
     .addEventListener("click",()=>{
 
       tasks = tasks.filter(t => t.id !== task.id);
+
+      if(editingTaskId === task.id){
+        cancelEdit();
+      }
 
       saveTasks();
       renderTasks();
@@ -1006,7 +1027,8 @@ function addTask(){
   }
 
   const duplicate = tasks.find(t =>
-    t.name.toLowerCase() === name.toLowerCase()
+    t.name.toLowerCase() === name.toLowerCase() &&
+    t.id !== editingTaskId
   );
 
   if(duplicate){
@@ -1014,30 +1036,127 @@ function addTask(){
     return;
   }
 
-  const task = {
+  if(editingTaskId){
 
-    id:Date.now(),
-    name,
-    desc,
-    type,
-    completed:false,
-    timeType:selectedTimeType,
-    timeValue
+    const idx = tasks.findIndex(t => t.id === editingTaskId);
 
-  };
+    if(idx !== -1){
 
-  tasks.unshift(task);
+      tasks[idx] = {
+        ...tasks[idx],
+        name,
+        desc,
+        type,
+        timeType:selectedTimeType,
+        timeValue
+      };
 
-  saveTasks();
-  renderTasks();
-  updateStats();
+    }
 
-  sendEmail(task, generateAnalysis());
+    cancelEdit();
 
-  document.getElementById("taskName").value = '';
-  document.getElementById("taskDesc").value = '';
+    saveTasks();
+    renderTasks();
+    updateStats();
 
-  showToast("Prioritas berhasil ditambahkan");
+    document.getElementById("taskName").value = '';
+    document.getElementById("taskDesc").value = '';
+
+    showToast("Prioritas berhasil diperbarui");
+
+  }
+  else{
+
+    const task = {
+
+      id:Date.now(),
+      name,
+      desc,
+      type,
+      completed:false,
+      timeType:selectedTimeType,
+      timeValue
+
+    };
+
+    tasks.unshift(task);
+
+    saveTasks();
+    renderTasks();
+    updateStats();
+
+    sendEmail(task, generateAnalysis());
+
+    document.getElementById("taskName").value = '';
+    document.getElementById("taskDesc").value = '';
+
+    showToast("Prioritas berhasil ditambahkan");
+
+  }
+
+}
+
+function editTask(id){
+
+  const task = tasks.find(t => t.id === id);
+
+  if(!task) return;
+
+  editingTaskId = id;
+
+  document.getElementById("taskName").value = task.name;
+  document.getElementById("taskDesc").value = task.desc;
+  document.getElementById("taskType").value = task.type;
+
+  const timeIndex = { daily:0, monthly:1, yearly:2 }[task.timeType];
+
+  const timeButtons =
+    document.querySelectorAll('.time-btn');
+
+  timeButtons.forEach(btn=>btn.classList.remove('active'));
+  timeButtons[timeIndex].classList.add('active');
+
+  selectTimeType(task.timeType, timeButtons[timeIndex]);
+
+  // isi ulang input waktu setelah wrapper dibangun ulang
+  setTimeout(()=>{
+
+    if(task.timeType === 'daily'){
+      const input = document.getElementById('dailyInput');
+      if(input) input.value = task.timeValue;
+    }
+    else if(task.timeType === 'monthly'){
+      const input = document.getElementById('monthlyInput');
+      if(input) input.value = task.timeValue;
+    }
+    else{
+      const input = document.getElementById('yearlyInput');
+      if(input) input.value = task.timeValue;
+    }
+
+  },0);
+
+  const addBtn = document.getElementById('addTaskBtn');
+  addBtn.innerText = '✓ Update Prioritas';
+
+  document.querySelector('.card').scrollIntoView({
+    behavior:'smooth',
+    block:'start'
+  });
+
+  showToast("Mode edit aktif, ubah data lalu klik Update Prioritas");
+
+}
+
+function cancelEdit(){
+
+  editingTaskId = null;
+
+  const addBtn = document.getElementById('addTaskBtn');
+
+  if(addBtn){
+    addBtn.innerText = '+ Tambah Prioritas';
+  }
 
 }
 
@@ -1188,6 +1307,23 @@ Sistem RAD berhasil menganalisis pola prioritas.
 
 function resetForm(){
 
+  const confirmReset = confirm(
+    "Reset akan mengosongkan seluruh aktivitas di Kuadran 1-4. Lanjutkan?"
+  );
+
+  if(!confirmReset){
+    return;
+  }
+
+  // kosongkan seluruh data tugas
+  tasks = [];
+  cancelEdit();
+
+  saveTasks();
+  renderTasks();
+  updateStats();
+
+  // reset input form
   document.getElementById("taskName").value = '';
   document.getElementById("taskDesc").value = '';
 
@@ -1213,7 +1349,7 @@ function resetForm(){
 
   initFlatpickr();
 
-  showToast("Form berhasil direset");
+  showToast("Semua aktivitas dan form berhasil direset");
 
 }
 
@@ -1372,45 +1508,66 @@ async function exportPDF(){
     50
   );
 
-  doc.setFontSize(12);
+  const importantCount =
+    tasks.filter(t =>
+      t.type === 'q1' ||
+      t.type === 'q2'
+    ).length;
 
-  doc.text(
-    `Total Aktivitas : ${tasks.length}`,
-    14,
-    68
-  );
+  const urgentCount =
+    tasks.filter(t =>
+      t.type === 'q1' ||
+      t.type === 'q3'
+    ).length;
 
-  doc.text(
-    `Aktivitas Penting : ${
-      tasks.filter(t =>
-        t.type === 'q1' ||
-        t.type === 'q2'
-      ).length
-    }`,
-    14,
-    76
-  );
+  const completedCount =
+    tasks.filter(t => t.completed).length;
 
-  doc.text(
-    `Aktivitas Mendesak : ${
-      tasks.filter(t =>
-        t.type === 'q1' ||
-        t.type === 'q3'
-      ).length
-    }`,
-    14,
-    84
-  );
+  // Ringkasan statistik ditampilkan horizontal dalam satu baris
+  doc.autoTable({
 
-  doc.text(
-    `Aktivitas Selesai : ${
-      tasks.filter(t =>
-        t.completed
-      ).length
-    }`,
-    14,
-    92
-  );
+    startY:64,
+
+    head:[[
+      "Total Aktivitas",
+      "Aktivitas Penting",
+      "Aktivitas Mendesak",
+      "Aktivitas Selesai"
+    ]],
+
+    body:[[
+      String(tasks.length),
+      String(importantCount),
+      String(urgentCount),
+      String(completedCount)
+    ]],
+
+    theme:'grid',
+
+    styles:{
+      halign:'center',
+      valign:'middle',
+      fontSize:9,
+      cellPadding:5
+    },
+
+    headStyles:{
+      fillColor:BLUE,
+      textColor:[255,255,255],
+      fontSize:8.5
+    },
+
+    bodyStyles:{
+      fontSize:13,
+      fontStyle:'bold',
+      textColor:BLUE
+    },
+
+    margin:{ left:14, right:14 }
+
+  });
+
+  const statsFinalY = doc.lastAutoTable.finalY;
 
   // Data tabel
   const sortedTasks = [...tasks].sort((a,b)=>{
@@ -1439,7 +1596,7 @@ async function exportPDF(){
 
   doc.autoTable({
 
-    startY:103,
+    startY: statsFinalY + 10,
 
     head:[[
       "No",
@@ -1649,6 +1806,39 @@ function selectTimeType(type, element){
 
 }
 
+function scheduleAutoExportPDF(){
+
+  const now = new Date();
+
+  const nextMidnight = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() + 1,
+    0, 0, 0, 0
+  );
+
+  const msUntilMidnight =
+    nextMidnight - now;
+
+  setTimeout(()=>{
+
+    if(tasks.length > 0){
+      exportPDF();
+    }
+
+    // ulangi setiap 24 jam setelah tengah malam pertama
+    setInterval(()=>{
+
+      if(tasks.length > 0){
+        exportPDF();
+      }
+
+    }, 24 * 60 * 60 * 1000);
+
+  }, msUntilMidnight);
+
+}
+
 function updatePlannerTitle(){
 
   const value =
@@ -1677,6 +1867,8 @@ document.getElementById(
 plannerData.plannerName || "";
 
 updatePlannerTitle();
+
+scheduleAutoExportPDF();
 
 </script>
 
