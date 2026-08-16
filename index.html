@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>RAD - Priority Planner</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+<!-- Stylesheet aplikasi -->
+<link rel="stylesheet" href="css/style.css">
+
+<!-- Library pihak ketiga -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
+</head>
+<body>
+
+<div class="toast" id="toast">
+  Data prioritas berhasil ditambahkan
+</div>
+
+<div class="container">
+
+  <div class="header">
+    <h1>Priority Planner</h1>
+    <p>
+      Susun aktivitas menggunakan Matrix Stephen R. Covey.
+      Fokus pada prioritas penting, tingkatkan produktivitas,
+      dan capai tujuan dengan lebih terarah.
+    </p>
+  </div>
+
+  <div class="stats">
+
+    <div class="stat-card">
+      <h2 id="totalTask">0</h2>
+      <p>Total Aktivitas</p>
+    </div>
+
+    <div class="stat-card">
+      <h2 id="importantTask">0</h2>
+      <p>Penting</p>
+    </div>
+
+    <div class="stat-card">
+      <h2 id="urgentTask">0</h2>
+      <p>Mendesak</p>
+    </div>
+
+    <div class="stat-card">
+      <h2 id="completedTask">0</h2>
+      <p>Selesai</p>
+    </div>
+
+  </div>
+
+  <div class="main">
+
+    <!-- CONTENT -->
+    <div class="content-area">
+
+      <!-- NAMA PLANNER -->
+      <div class="planner-header">
+
+        <label class="planner-label">
+          Project Tabel Skala Prioritas
+        </label>
+
+        <input
+          type="text"
+          id="plannerName"
+          class="planner-input"
+          placeholder="Contoh: Prioritas Organisasi BEM 2026"
+          oninput="updatePlannerTitle()"
+        >
+
+        <h2 id="plannerTitle">
+          Belum Ada Nama Planner
+        </h2>
+
+      </div>
+
+      <div class="card">
+
+        <h2 class="card-title">
+          Tambah Prioritas
+        </h2>
+
+        <div class="form-group">
+          <label>Nama Aktivitas</label>
+          <input type="text" id="taskName" placeholder="Contoh: Menyelesaikan proposal">
+        </div>
+
+        <div class="form-group">
+          <label>Deskripsi Aktivitas</label>
+          <textarea id="taskDesc" placeholder="Tulis detail aktivitas..."></textarea>
+        </div>
+
+        <div class="form-group">
+
+          <label>Waktu Keperluan</label>
+
+          <div class="time-type">
+
+            <button type="button"
+              class="time-btn active"
+              onclick="selectTimeType('daily', this)">
+              Harian
+            </button>
+
+            <button type="button"
+              class="time-btn"
+              onclick="selectTimeType('monthly', this)">
+              Bulanan
+            </button>
+
+            <button type="button"
+              class="time-btn"
+              onclick="selectTimeType('yearly', this)">
+              Tahunan
+            </button>
+
+          </div>
+
+          <div id="timeInputWrapper">
+
+            <!-- Harian -->
+            <input
+              type="text"
+              id="dailyInput"
+              placeholder="Pilih tanggal">
+          </div>
+
+        </div>
+
+        <div class="form-group">
+          <label>Kategori Prioritas</label>
+          <select id="taskType">
+
+            <option value="q1">
+              Penting & Mendesak
+            </option>
+
+            <option value="q2">
+              Penting Tidak Mendesak
+            </option>
+
+            <option value="q3">
+              Tidak Penting Tapi Mendesak
+            </option>
+
+            <option value="q4">
+              Tidak Penting & Tidak Mendesak
+            </option>
+
+          </select>
+        </div>
+
+        <div class="button-group">
+
+          <button class="btn" id="addTaskBtn" onclick="addTask()">
+            + Tambah Prioritas
+          </button>
+
+          <button class="btn save-btn" onclick="saveAllData()">
+            Simpan
+          </button>
+
+          <button class="btn reset-btn" onclick="resetForm()">
+            Reset
+          </button>
+
+          <button class="btn" onclick="exportPDF()">
+            Export PDF
+          </button>
+
+        </div>
+      </div>
+
+      <div class="priority-grid">
+
+        <div class="quadrant q1">
+          <h3>🔥 Kuadran 1</h3>
+          <p>Penting & Mendesak</p>
+          <div id="q1">
+            <div class="empty">Belum ada aktivitas</div>
+          </div>
+        </div>
+
+        <div class="quadrant q2">
+          <h3>🌱 Kuadran 2</h3>
+          <p>Penting Tidak Mendesak</p>
+          <div id="q2">
+            <div class="empty">Belum ada aktivitas</div>
+          </div>
+        </div>
+
+        <div class="quadrant q3">
+          <h3>⚡ Kuadran 3</h3>
+          <p>Tidak Penting Tapi Mendesak</p>
+          <div id="q3">
+            <div class="empty">Belum ada aktivitas</div>
+          </div>
+        </div>
+
+        <div class="quadrant q4">
+          <h3>🛋️ Kuadran 4</h3>
+          <p>Tidak Penting & Tidak Mendesak</p>
+          <div id="q4">
+            <div class="empty">Belum ada aktivitas</div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="footer">
+    Rizky Ahmed Darmawan © 2026
+  </div>
+
+</div>
+
+<!-- ==========================================================
+     MODUL JAVASCRIPT APLIKASI
+     Urutan pemuatan penting: config & storage dulu (state
+     global), lalu ui/time-picker/analysis (fungsi bantuan),
+     baru notifications/tasks/pdf-export (logika fitur),
+     dan main.js terakhir sebagai titik masuk (bootstrap).
+     ========================================================== -->
+
+<script src="js/config.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/time-picker.js"></script>
+<script src="js/analysis.js"></script>
+<script src="js/notifications.js"></script>
+<script src="js/tasks.js"></script>
+<script src="js/pdf-export.js"></script>
+<script src="js/main.js"></script>
+
+</body>
+</html>
