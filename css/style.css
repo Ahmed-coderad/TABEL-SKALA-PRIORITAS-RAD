@@ -1,0 +1,1980 @@
+/* =========================================================
+   RAD PRIORITY PLANNER — STYLESHEET
+   Didesain ulang agar sederhana & mudah dipahami lintas usia
+   (siswa SMP/SMA, mahasiswa, guru/dosen, pekerja kantoran),
+   dengan tata letak yang tetap rapi & presisi di semua ukuran
+   layar (grid tidak "runtuh" jadi 1 kolom di HP — hanya
+   menyusut secara proporsional/fluid supaya pengalamannya
+   konsisten dengan versi desktop/laptop), plus animasi yang
+   lebih halus & meyakinkan. Warna utama: #1171B1 & #FCC102.
+   ========================================================= */
+
+:root{
+
+  /* --- Warna utama brand --- */
+  --primary:#1171B1;
+  --primary-dark:#0d5c90;
+  --primary-darker:#0b3a5c;
+  --primary-light:#e8f3ff;
+  --secondary:#FCC102;
+  --secondary-dark:#e0a800;
+  --secondary-light:#fff6dd;
+
+  --light:#FBFBFB;
+  --dark:#1f2937;
+  --muted:#5b6b7c;
+  --success:#22c55e;
+  --danger:#ef4444;
+  --surface:#ffffff;
+  --bg:#f5f9fc;
+
+  /* --- Bayangan & radius, dipakai konsisten di seluruh UI --- */
+  --shadow-sm:0 4px 14px rgba(17,113,177,.08);
+  --shadow:0 10px 35px rgba(17,113,177,.12);
+  --shadow-lg:0 22px 55px rgba(17,113,177,.20);
+  --radius-sm:14px;
+  --radius:22px;
+  --radius-lg:30px;
+
+  /* --- Kurva animasi & durasi standar --- */
+  --ease:cubic-bezier(.34,1.2,.4,1);
+  --ease-soft:cubic-bezier(.4,0,.2,1);
+  --fast:.2s;
+  --normal:.35s;
+
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+}
+
+/* Ukuran huruf dasar dibuat fluid (menyesuaikan lebar layar
+   secara halus) supaya proporsi teks & jarak antar elemen
+   tetap terasa sama "rapi"-nya di HP kecil, tablet, maupun
+   laptop besar — bukan berubah drastis di titik breakpoint. */
+html{
+  font-size:clamp(14.5px, 1vw + 11px, 17px);
+  scroll-behavior:smooth;
+}
+
+body{
+  background:
+    radial-gradient(circle at top left, rgba(17,113,177,.09), transparent 32%),
+    radial-gradient(circle at bottom right, rgba(252,193,2,.14), transparent 32%),
+    var(--bg);
+  min-height:100vh;
+  padding:clamp(12px, 3vw, 25px);
+  color:var(--dark);
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+
+.container{
+  max-width:1500px;
+  margin:auto;
+}
+
+/* Fokus keyboard yang jelas untuk semua pengguna (aksesibilitas) */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible{
+  outline:3px solid var(--secondary);
+  outline-offset:2px;
+  border-radius:8px;
+}
+
+/* Hormati preferensi pengguna yang sensitif terhadap gerakan */
+@media (prefers-reduced-motion: reduce){
+  *,
+  *::before,
+  *::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+    scroll-behavior:auto !important;
+  }
+}
+
+/* ===== HEADER ===== */
+
+.header{
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark) 55%,var(--primary-darker));
+  border-radius:clamp(22px, 4vw, 35px);
+  padding:clamp(24px, 5vw, 40px);
+  color:white;
+  position:relative;
+  overflow:hidden;
+  box-shadow:var(--shadow-lg);
+}
+
+/* Dua bentuk dekoratif melayang pelan — memberi kesan
+   "hidup"/modern tanpa mengganggu keterbacaan konten. */
+.header::before,
+.header::after{
+  content:'';
+  position:absolute;
+  border-radius:50%;
+  pointer-events:none;
+}
+
+.header::before{
+  width:300px;
+  height:300px;
+  background:rgba(255,255,255,.08);
+  top:-120px;
+  right:-100px;
+  animation:driftA 9s ease-in-out infinite alternate;
+}
+
+.header::after{
+  width:170px;
+  height:170px;
+  background:rgba(252,193,2,.16);
+  bottom:-90px;
+  left:-60px;
+  animation:driftB 11s ease-in-out infinite alternate;
+}
+
+@keyframes driftA{
+  from{ transform:translate(0,0) scale(1); }
+  to{ transform:translate(-22px,18px) scale(1.08); }
+}
+
+@keyframes driftB{
+  from{ transform:translate(0,0) scale(1); }
+  to{ transform:translate(18px,-14px) scale(1.12); }
+}
+
+.header h1{
+  font-size:clamp(1.9rem, 3.2vw + 1rem, 3rem);
+  margin-bottom:10px;
+  position:relative;
+  z-index:2;
+  font-weight:800;
+  letter-spacing:.2px;
+}
+
+.header p{
+  max-width:700px;
+  line-height:1.8;
+  opacity:.95;
+  position:relative;
+  z-index:2;
+  font-size:clamp(.88rem, .3vw + .8rem, 1rem);
+}
+
+/* ===== STATS ===== */
+/* Grid statistik selalu berbentuk grid 2 kolom minimal —
+   tidak pernah "ambruk" jadi daftar 1 kolom, supaya nuansanya
+   tetap seperti dashboard di layar manapun. */
+
+.stats{
+  margin-top:22px;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:clamp(10px, 2vw, 20px);
+}
+
+.stat-card{
+  background:var(--surface);
+  border-radius:var(--radius);
+  padding:clamp(16px, 2.5vw, 25px);
+  text-align:center;
+  box-shadow:var(--shadow-sm);
+  transition:transform var(--normal) var(--ease), box-shadow var(--normal) var(--ease);
+  border:2px solid transparent;
+  animation:popIn .45s var(--ease) both;
+}
+
+.stats .stat-card:nth-child(1){ animation-delay:.02s; }
+.stats .stat-card:nth-child(2){ animation-delay:.08s; }
+.stats .stat-card:nth-child(3){ animation-delay:.14s; }
+.stats .stat-card:nth-child(4){ animation-delay:.2s; }
+
+.stat-card:hover{
+  transform:translateY(-6px);
+  box-shadow:var(--shadow-lg);
+  border-color:var(--secondary);
+}
+
+.stat-card h2{
+  color:var(--primary);
+  font-size:clamp(1.5rem, 2vw + .8rem, 2.3rem);
+  font-weight:800;
+}
+
+.stat-card p{
+  opacity:.7;
+  margin-top:6px;
+  font-size:clamp(.72rem, .3vw + .65rem, .88rem);
+  font-weight:600;
+}
+
+/* ===== LAYOUT ===== */
+
+.main{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:clamp(16px, 3vw, 25px);
+  margin-top:clamp(16px, 3vw, 25px);
+}
+
+.content-area{
+  display:flex;
+  flex-direction:column;
+  gap:clamp(14px, 2.5vw, 20px);
+  width:100%;
+}
+
+.card{
+  background:var(--surface);
+  border-radius:var(--radius-lg);
+  padding:clamp(18px, 3vw, 25px);
+  box-shadow:var(--shadow);
+}
+
+.card-title{
+  color:var(--primary);
+  margin-bottom:18px;
+  font-size:clamp(1.05rem, .5vw + .9rem, 1.3rem);
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.card-title::before{
+  content:'';
+  display:inline-block;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--secondary);
+}
+
+/* ===== FORM ===== */
+
+.form-group{
+  margin-bottom:18px;
+}
+
+label{
+  display:block;
+  margin-bottom:8px;
+  font-weight:600;
+  font-size:.92rem;
+  color:var(--dark);
+}
+
+input,
+textarea,
+select{
+  width:100%;
+  border:2px solid transparent;
+  outline:none;
+  padding:14px 15px;
+  min-height:50px;
+  border-radius:16px;
+  background:#f4f7fa;
+  transition:background var(--fast) var(--ease-soft), border-color var(--fast) var(--ease-soft), box-shadow var(--fast) var(--ease-soft);
+  font-size:.95rem;
+  font-family:inherit;
+  color:var(--dark);
+}
+
+input::placeholder,
+textarea::placeholder{
+  color:#94a3b8;
+}
+
+input:hover,
+textarea:hover,
+select:hover{
+  background:#eef4f9;
+}
+
+input:focus,
+textarea:focus,
+select:focus{
+  background:white;
+  border-color:var(--primary);
+  box-shadow:0 0 0 4px rgba(17,113,177,.14);
+}
+
+textarea{
+  min-height:100px;
+  resize:vertical;
+  line-height:1.6;
+}
+
+select{
+  cursor:pointer;
+  appearance:auto;
+  -webkit-appearance:auto;
+  -moz-appearance:auto;
+}
+
+/* ===== BUTTONS ===== */
+
+button{
+  border:none;
+  cursor:pointer;
+  font-family:inherit;
+}
+
+.button-group{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-top:6px;
+}
+
+/* Tombol utama "Tambah/Update Prioritas" tampil menonjol,
+   melebar penuh di baris pertama; Simpan & Reset berdampingan;
+   Export PDF melebar penuh di baris terakhir. Susunan ini sama
+   persis di HP maupun desktop — hanya ukurannya yang menyesuaikan. */
+.button-group #addTaskBtn{
+  grid-column:1 / -1;
+  font-size:1.02rem;
+  padding:17px;
+}
+
+.button-group .btn[onclick="exportPDF()"],
+.button-group #exportPdfBtn{
+  grid-column:1 / -1;
+  background:linear-gradient(135deg,var(--dark),#334155);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+
+#exportPdfBtn:disabled{
+  cursor:not-allowed;
+  filter:brightness(.85);
+  transform:none;
+}
+
+#exportPdfBtn:disabled::before{
+  display:none;
+}
+
+#exportPdfBtn .btn-spinner{
+  width:16px;
+  height:16px;
+  border-radius:50%;
+  border:2.5px solid rgba(255,255,255,.35);
+  border-top-color:#fff;
+  display:none;
+  animation:exportSpin .7s linear infinite;
+  flex-shrink:0;
+}
+
+#exportPdfBtn.is-exporting .btn-spinner{
+  display:inline-block;
+}
+
+@keyframes exportSpin{
+  to{ transform:rotate(360deg); }
+}
+
+.save-btn{
+  background:linear-gradient(135deg,#16a34a,#15803d);
+}
+
+.reset-btn{
+  background:linear-gradient(135deg,var(--danger),#dc2626);
+}
+
+.btn{
+  width:100%;
+  min-height:50px;
+  padding:15px;
+  border-radius:16px;
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  color:white;
+  font-weight:700;
+  font-size:.95rem;
+  transition:transform var(--fast) var(--ease), box-shadow var(--fast) var(--ease), filter var(--fast) var(--ease-soft);
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 6px 16px rgba(17,113,177,.22);
+}
+
+.btn::before{
+  content:'';
+  position:absolute;
+  top:0;
+  left:-100%;
+  width:100%;
+  height:100%;
+  background:rgba(255,255,255,.25);
+  transition:.6s var(--ease-soft);
+}
+
+.btn:hover::before{
+  left:100%;
+}
+
+.btn:hover{
+  transform:translateY(-3px);
+  filter:brightness(1.03);
+}
+
+.btn:active{
+  transform:translateY(-1px) scale(.98);
+}
+
+/* ===== TIME TYPE SELECTOR ===== */
+
+.time-type{
+  display:flex;
+  gap:8px;
+  margin-bottom:14px;
+  background:#eef4f8;
+  padding:6px;
+  border-radius:18px;
+}
+
+.time-btn{
+  flex:1;
+  padding:12px 8px;
+  min-height:44px;
+  border-radius:13px;
+  background:transparent;
+  color:var(--muted);
+  font-weight:600;
+  font-size:.88rem;
+  transition:background var(--fast) var(--ease-soft), color var(--fast) var(--ease-soft), transform var(--fast) var(--ease);
+}
+
+.time-btn.active{
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  color:white;
+  box-shadow:0 6px 16px rgba(17,113,177,.28);
+  animation:pop .3s var(--ease);
+}
+
+.time-btn:hover{
+  color:var(--primary);
+}
+
+.time-btn.active:hover{
+  color:white;
+}
+
+@keyframes pop{
+  0%{ transform:scale(.92); }
+  60%{ transform:scale(1.04); }
+  100%{ transform:scale(1); }
+}
+
+#timeInputWrapper input,
+#timeInputWrapper select{
+  margin-top:4px;
+}
+
+/* ===== FLATPICKR OVERRIDES ===== */
+
+.flatpickr-calendar{
+  border:none !important;
+  border-radius:var(--radius) !important;
+  box-shadow:var(--shadow-lg) !important;
+  overflow:hidden;
+}
+
+.flatpickr-day.selected{
+  background:var(--primary) !important;
+  border-color:var(--primary) !important;
+}
+
+.flatpickr-day:hover{
+  background:var(--primary-light) !important;
+}
+
+.flatpickr-day.today{
+  border-color:var(--secondary) !important;
+}
+
+/* ===== PLANNER HEADER ===== */
+
+.planner-header{
+  background:rgba(255,255,255,.85);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.6);
+  border-radius:var(--radius-lg);
+  padding:clamp(20px, 4vw, 35px);
+  text-align:center;
+  box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+.planner-label{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:4px;
+  font-size:clamp(.78rem, .3vw + .72rem, .9rem);
+  font-weight:700;
+  color:var(--primary);
+  margin-bottom:clamp(10px, 1.6vw, 14px);
+  text-transform:uppercase;
+  letter-spacing:.6px;
+}
+
+.required-mark{
+  color:var(--danger);
+  font-weight:800;
+}
+
+.planner-input{
+  display:block;
+  width:100%;
+  max-width:500px;
+  margin:0 auto;
+  text-align:center;
+  font-size:clamp(.92rem, .35vw + .85rem, 1.05rem);
+  font-weight:600;
+}
+
+/* Selector diperkuat (bukan cuma .planner-required-hint) supaya
+   margin:auto di sini pasti menang atas shorthand margin milik
+   .field-hint di bawah — sebelumnya keduanya sama-sama single
+   class, jadi urutan file yang menentukan & hint jadi nempel
+   rata kiri, bukan center, di layar yang lebih lebar dari 460px. */
+.planner-header .planner-required-hint{
+  display:block;
+  width:100%;
+  max-width:420px;
+  margin:clamp(6px, 1.2vw, 10px) auto 0;
+  padding:0 10px;
+  text-align:center;
+  font-size:clamp(.74rem, .3vw + .7rem, .82rem);
+  line-height:1.5;
+  opacity:.68;
+}
+
+/* Input planner disorot lembut selama masih kosong, supaya jelas
+   ini adalah gerbang wajib sebelum mengisi data lain. */
+#plannerName.field-required-empty{
+  border-color:rgba(239,68,68,.35);
+  box-shadow:0 0 0 4px rgba(239,68,68,.08);
+}
+
+.planner-header.needs-attention{
+  border-color:rgba(239,68,68,.35);
+  animation:plannerAttentionPulse 2.6s ease-in-out infinite;
+}
+
+@keyframes plannerAttentionPulse{
+  0%, 100%{ box-shadow:0 10px 30px rgba(0,0,0,.08); }
+  50%{ box-shadow:0 10px 30px rgba(0,0,0,.08), 0 0 0 6px rgba(239,68,68,.06); }
+}
+
+/* ===== KUNCI FORM "TAMBAH PRIORITAS" ===== */
+
+.planner-lock-notice{
+  display:none;
+  align-items:center;
+  gap:10px;
+  background:var(--secondary-light);
+  border:1.5px dashed var(--secondary-dark);
+  color:#8a5a00;
+  border-radius:var(--radius-sm);
+  padding:12px 16px;
+  margin-bottom:18px;
+  font-size:.85rem;
+  font-weight:600;
+  line-height:1.5;
+}
+
+.planner-lock-notice.is-visible{
+  display:flex;
+  animation:cardIn .35s var(--ease);
+}
+
+.planner-lock-icon{
+  font-size:1.1rem;
+  flex-shrink:0;
+}
+
+#plannerLockableFields.is-locked{
+  position:relative;
+  opacity:.5;
+  filter:grayscale(.35);
+  pointer-events:none;
+  user-select:none;
+  transition:opacity .3s var(--ease-soft), filter .3s var(--ease-soft);
+}
+
+.form-progress.is-locked{
+  opacity:.5;
+  pointer-events:none;
+}
+
+input:disabled,
+textarea:disabled,
+select:disabled{
+  cursor:not-allowed;
+  background:#eef1f4;
+  color:#94a3b8;
+}
+
+.btn:disabled,
+.time-btn:disabled{
+  cursor:not-allowed;
+  opacity:.6;
+  box-shadow:none;
+}
+
+.btn:disabled::before{
+  display:none;
+}
+
+#plannerTitle{
+  margin-top:clamp(14px, 2.4vw, 18px);
+  color:var(--primary);
+  font-size:clamp(1.35rem, 2.4vw + .6rem, 2rem);
+  font-weight:800;
+  line-height:1.4;
+  text-align:center;
+  letter-spacing:.4px;
+  word-break:break-word;
+}
+
+/* ===== PRIORITY MATRIX ===== */
+/* Selalu 2 kolom (mencerminkan 4 kuadran Matriks Eisenhower)
+   di semua ukuran layar — hanya jarak & besar hurufnya yang
+   menyesuaikan secara halus lewat clamp(), bukan berubah
+   menjadi tumpukan 1 kolom di HP. */
+
+.priority-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:clamp(10px, 2.2vw, 20px);
+}
+
+.quadrant{
+  border-radius:var(--radius);
+  padding:clamp(14px, 2.6vw, 22px);
+  min-height:clamp(200px, 30vw, 320px);
+  position:relative;
+  transition:box-shadow var(--normal) var(--ease-soft);
+}
+
+.quadrant:hover{
+  box-shadow:0 12px 30px rgba(0,0,0,.06);
+}
+
+.q1{
+  background:#fff0f0;
+  border:2px solid #ff9d9d;
+}
+
+.q2{
+  background:#effff4;
+  border:2px solid #8ce3a8;
+}
+
+.q3{
+  background:#fff9e8;
+  border:2px solid #ffd64c;
+}
+
+.q4{
+  background:#eef5ff;
+  border:2px solid #9bc2ff;
+}
+
+.quadrant h3{
+  margin-bottom:6px;
+  font-size:clamp(.92rem, .5vw + .78rem, 1.1rem);
+}
+
+.quadrant p{
+  font-size:clamp(.72rem, .3vw + .68rem, .9rem);
+  opacity:.7;
+  margin-bottom:18px;
+}
+
+/* ===== TASK CARD ===== */
+
+.task{
+  background:white;
+  padding:clamp(12px, 2vw, 18px);
+  border-radius:var(--radius-sm);
+  margin-bottom:13px;
+  box-shadow:0 6px 18px rgba(0,0,0,.06);
+  animation:cardIn .38s var(--ease) both;
+  position:relative;
+  border-left:5px solid var(--primary);
+  transition:transform var(--normal) var(--ease), box-shadow var(--normal) var(--ease), opacity var(--normal) var(--ease-soft);
+}
+
+.q1 .task{ border-left-color:#ef4444; }
+.q2 .task{ border-left-color:#16a34a; }
+.q3 .task{ border-left-color:#eab308; }
+.q4 .task{ border-left-color:#3b82f6; }
+
+.task:hover{
+  transform:translateY(-4px);
+  box-shadow:0 14px 30px rgba(0,0,0,.1);
+}
+
+.task.completed{
+  opacity:.6;
+  text-decoration:line-through;
+}
+
+.task h4{
+  margin-bottom:8px;
+  font-size:clamp(.9rem, .3vw + .82rem, 1rem);
+}
+
+.task small{
+  display:block;
+  margin-bottom:12px;
+  line-height:1.55;
+  opacity:.8;
+  font-size:clamp(.74rem, .2vw + .7rem, .85rem);
+}
+
+.task-footer{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+
+.task-footer button{
+  padding:10px 6px;
+  border-radius:12px;
+  font-size:clamp(.68rem, .25vw + .64rem, .82rem);
+  font-weight:700;
+  min-height:40px;
+  transition:transform var(--fast) var(--ease), filter var(--fast) var(--ease-soft);
+}
+
+.task-footer button:hover{
+  transform:translateY(-2px);
+  filter:brightness(.97);
+}
+
+.done-btn{
+  background:#dcfce7;
+  color:#15803d;
+}
+
+.delete-btn{
+  background:#fee2e2;
+  color:#dc2626;
+}
+
+.edit-btn{
+  background:#dbeafe;
+  color:#1d4ed8;
+}
+
+.calendar-btn{
+  background:#fff3d6;
+  color:#92600a;
+}
+
+.empty{
+  opacity:.5;
+  text-align:center;
+  margin-top:50px;
+  font-size:.9rem;
+}
+
+.empty::before{
+  content:'📭';
+  display:block;
+  font-size:1.8rem;
+  margin-bottom:8px;
+}
+
+/* ===== TOAST ===== */
+
+.toast{
+  position:fixed;
+  top:24px;
+  right:24px;
+  width:calc(100% - 48px);
+  max-width:380px;
+  background:white;
+  padding:16px 22px;
+  border-left:6px solid var(--success);
+  border-radius:var(--radius-sm);
+  box-shadow:var(--shadow-lg);
+  z-index:9999;
+  transform:translateY(-30px) scale(.92);
+  opacity:0;
+  transition:transform .45s var(--ease), opacity .3s ease;
+  font-weight:600;
+  font-size:.9rem;
+  pointer-events:none;
+}
+
+.toast.show{
+  transform:translateY(0) scale(1);
+  opacity:1;
+}
+
+/* ===== FOOTER ===== */
+
+.footer{
+  margin-top:40px;
+  padding-top:22px;
+  border-top:1px solid rgba(17,113,177,.12);
+}
+
+.footer-inner{
+  max-width:640px;
+  margin:0 auto;
+  text-align:center;
+}
+
+.footer-brand{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  margin-bottom:8px;
+  color:var(--primary);
+  font-weight:800;
+  font-size:.85rem;
+  letter-spacing:.5px;
+  text-transform:uppercase;
+}
+
+.footer-brand-mark{
+  color:var(--secondary-dark);
+  font-size:.7rem;
+}
+
+.footer-copyright{
+  font-size:.85rem;
+  font-weight:600;
+  color:var(--dark);
+  opacity:.8;
+  margin-bottom:4px;
+}
+
+.footer-author{
+  color:var(--primary);
+  font-weight:800;
+}
+
+.footer-legal{
+  font-size:.72rem;
+  line-height:1.6;
+  color:var(--muted);
+  opacity:.75;
+  max-width:520px;
+  margin:0 auto;
+}
+
+/* ===== ANIMASI DASAR ===== */
+
+@keyframes cardIn{
+  from{
+    opacity:0;
+    transform:translateY(14px) scale(.97);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0) scale(1);
+  }
+}
+
+@keyframes popIn{
+  from{
+    opacity:0;
+    transform:translateY(12px) scale(.95);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0) scale(1);
+  }
+}
+
+@keyframes modalPop{
+  from{
+    opacity:0;
+    transform:translateY(18px) scale(.94);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0) scale(1);
+  }
+}
+
+@keyframes overlayFade{
+  from{ opacity:0; }
+  to{ opacity:1; }
+}
+
+/* ===== RESPONSIVE ===== */
+/* Catatan: struktur grid (stats 4-kol, priority-grid 2-kol)
+   sengaja TIDAK diubah jadi 1 kolom di breakpoint manapun —
+   hanya jarak, padding & ukuran huruf yang menyusut (lewat
+   clamp() di atas) supaya tampilan HP tetap "mencerminkan"
+   tampilan desktop, bukan versi yang terasa berbeda/terpotong. */
+
+@media(max-width:900px){
+
+  .stats{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+}
+
+@media(max-width:640px){
+
+  .top-bar{
+    flex-wrap:wrap;
+    gap:10px;
+  }
+
+  .button-group{
+    grid-template-columns:1fr;
+  }
+
+  .button-group #addTaskBtn,
+  .button-group .btn[onclick="exportPDF()"],
+  .button-group #exportPdfBtn{
+    grid-column:auto;
+  }
+
+  .task-footer{
+    grid-template-columns:1fr 1fr;
+  }
+
+}
+
+@media(max-width:420px){
+
+  .priority-grid{
+    gap:8px;
+  }
+
+  .quadrant{
+    padding:10px;
+  }
+
+}
+
+/* =========================================
+   UTILITY
+   ========================================= */
+
+.hidden{
+  display: none !important;
+}
+
+/* =========================================
+   AUTH SCREEN (LOGIN / REGISTER)
+   Layar pertama yang dilihat semua kalangan
+   pengguna — dibuat sesederhana & sejelas
+   mungkin: panel kiri menjelaskan APA yang bisa
+   dilakukan aplikasi lewat showcase fitur yang
+   beranimasi otomatis, panel kanan berisi form
+   masuk/daftar dengan tab yang mudah dikenali.
+   ========================================= */
+
+.auth-screen{
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(16px, 4vw, 25px);
+}
+
+.auth-shell{
+  width: 100%;
+  max-width: 920px;
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  animation: modalPop .45s var(--ease);
+}
+
+.auth-logo{
+  display: inline-block;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  font-weight: 800;
+  letter-spacing: 1px;
+  padding: 10px 18px;
+  border-radius: 14px;
+  margin-bottom: 12px;
+  box-shadow: 0 8px 20px rgba(17,113,177,.3);
+}
+
+/* ----- Panel kiri: showcase fitur beranimasi ----- */
+
+.auth-showcase{
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(150deg, var(--primary) 0%, var(--primary-dark) 60%, var(--primary-darker) 100%);
+  color: white;
+  padding: clamp(28px, 4vw, 42px) clamp(26px, 3.5vw, 38px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(18px, 3vw, 26px);
+}
+
+.auth-showcase-blob{
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.auth-showcase-blob.a{
+  width: 260px;
+  height: 260px;
+  background: rgba(255,255,255,.08);
+  top: -110px;
+  right: -80px;
+  animation: driftA 9s ease-in-out infinite alternate;
+}
+
+.auth-showcase-blob.b{
+  width: 190px;
+  height: 190px;
+  background: rgba(252,193,2,.18);
+  bottom: -80px;
+  left: -60px;
+  animation: driftB 11s ease-in-out infinite alternate;
+}
+
+.auth-showcase-top{
+  position: relative;
+  z-index: 2;
+}
+
+.auth-showcase-top .auth-logo{
+  background: rgba(255,255,255,.16);
+  box-shadow: none;
+  backdrop-filter: blur(2px);
+}
+
+.auth-showcase-top h1{
+  font-size: clamp(1.4rem, 1.4vw + 1rem, 1.75rem);
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.auth-showcase-top p{
+  font-size: .92rem;
+  line-height: 1.6;
+  opacity: .92;
+  max-width: 34ch;
+}
+
+/* Carousel fitur: setiap "slide" ditumpuk di posisi yang
+   sama dan berpindah lewat fade + geser halus, memberi
+   penjelasan visual singkat tentang apa yang bisa dilakukan
+   aplikasi sebelum pengguna sempat login. */
+.auth-feature-carousel{
+  position: relative;
+  z-index: 2;
+  min-height: 128px;
+  background: rgba(255,255,255,.09);
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+}
+
+.auth-feature{
+  position: absolute;
+  inset: 20px 22px;
+  opacity: 0;
+  transform: translateX(14px);
+  transition: opacity .5s var(--ease-soft), transform .5s var(--ease-soft);
+  pointer-events: none;
+}
+
+.auth-feature.is-active{
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+  position: relative;
+  inset: auto;
+}
+
+.auth-feature-icon{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  background: rgba(252,193,2,.22);
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+  animation: authFeaturePop .5s var(--ease) both;
+}
+
+.auth-feature h3{
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.auth-feature p{
+  font-size: .85rem;
+  line-height: 1.55;
+  opacity: .9;
+}
+
+@keyframes authFeaturePop{
+  from{ opacity: 0; transform: scale(.7) rotate(-8deg); }
+  to{ opacity: 1; transform: scale(1) rotate(0); }
+}
+
+.auth-feature-dots{
+  position: relative;
+  z-index: 2;
+  display: flex;
+  gap: 8px;
+}
+
+.auth-dot{
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.35);
+  transition: background var(--fast) var(--ease-soft), width var(--fast) var(--ease-soft);
+}
+
+.auth-dot.is-active{
+  background: var(--secondary);
+  width: 22px;
+  border-radius: 5px;
+}
+
+.auth-showcase-note{
+  position: relative;
+  z-index: 2;
+  margin-top: auto;
+  font-size: .8rem;
+  opacity: .82;
+  line-height: 1.5;
+  border-top: 1px solid rgba(255,255,255,.16);
+  padding-top: 14px;
+}
+
+/* ----- Panel kanan: form masuk / daftar ----- */
+
+.auth-panel{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(26px, 4vw, 40px);
+}
+
+.auth-card{
+  width: 100%;
+  max-width: 360px;
+}
+
+.auth-tabs{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  background: #eef4f8;
+  padding: 6px;
+  border-radius: 16px;
+  margin-bottom: 22px;
+}
+
+.auth-tab{
+  padding: 11px 10px;
+  min-height: 42px;
+  border-radius: 11px;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 700;
+  font-size: .88rem;
+  transition: background var(--fast) var(--ease-soft), color var(--fast) var(--ease-soft), box-shadow var(--fast) var(--ease-soft);
+}
+
+.auth-tab.is-active{
+  background: var(--surface);
+  color: var(--primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.auth-form{
+  animation: cardIn .35s var(--ease) both;
+}
+
+.auth-subtitle{
+  text-align: center;
+  opacity: .7;
+  font-size: .86rem;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+/* Input dengan ikon di kiri (dan tombol mata di kanan untuk
+   kolom kata sandi) — memudahkan pengguna dari berbagai usia
+   mengenali jenis kolom sekaligus memeriksa ketikannya. */
+.input-with-icon{
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-icon input{
+  padding-left: 42px;
+}
+
+.input-with-icon .input-icon{
+  position: absolute;
+  left: 14px;
+  font-size: .95rem;
+  opacity: .6;
+  pointer-events: none;
+}
+
+.input-with-icon input[type="password"],
+.input-with-icon input[type="text"]{
+  padding-right: 42px;
+}
+
+.input-toggle-visibility{
+  position: absolute;
+  right: 6px;
+  background: transparent;
+  border-radius: 10px;
+  width: 34px;
+  height: 34px;
+  font-size: .95rem;
+  color: var(--muted);
+  transition: background var(--fast) var(--ease-soft);
+}
+
+.input-toggle-visibility:hover{
+  background: rgba(17,113,177,.08);
+}
+
+.auth-error{
+  color: var(--danger);
+  font-size: .85rem;
+  font-weight: 600;
+  min-height: 18px;
+  margin-bottom: 10px;
+}
+
+.auth-form .btn{
+  animation: none;
+}
+
+/* =========================================
+   TOP BAR (inside header)
+   ========================================= */
+
+.top-bar{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 2;
+  margin-bottom: 18px;
+  gap:10px;
+}
+
+.current-user{
+  font-weight: 600;
+  opacity: .95;
+  font-size:.9rem;
+}
+
+.top-bar-actions{
+  display: flex;
+  gap: 10px;
+}
+
+.icon-btn{
+  background: rgba(255,255,255,.16);
+  color: white;
+  border-radius: 13px;
+  padding: 9px 16px;
+  font-weight: 700;
+  font-size: .82rem;
+  min-height:38px;
+  transition: background var(--fast) var(--ease-soft), transform var(--fast) var(--ease);
+}
+
+.icon-btn:hover{
+  background: rgba(255,255,255,.3);
+  transform: translateY(-2px);
+}
+
+/* =========================================
+   SETTINGS PANEL
+   ========================================= */
+
+.settings-overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(17,113,177,.28);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 20px;
+  animation: overlayFade .25s ease;
+}
+
+.settings-card{
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: clamp(22px, 4vw, 30px);
+  width: 100%;
+  max-width: 460px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  animation: modalPop .35s var(--ease);
+}
+
+.settings-header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.settings-header h2{
+  color: var(--primary);
+  font-size:1.2rem;
+}
+
+.settings-header .icon-btn{
+  background: #f4f7fa;
+  color: var(--dark);
+  padding: 7px 13px;
+}
+
+.settings-header .icon-btn:hover{
+  background:#e8f0f6;
+}
+
+.field-hint{
+  font-size: .82rem;
+  opacity: .7;
+  line-height: 1.5;
+  margin: 6px 0 12px;
+}
+
+/* ===== TANGGAL ALARM (READ-ONLY, TERKUNCI) ===== */
+
+.reminder-date-display{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--primary-light);
+  color: var(--primary);
+  font-size: .85rem;
+  font-weight: 700;
+  line-height: 1.4;
+  border-left:4px solid var(--secondary);
+}
+
+.reminder-date-display::before{
+  content: "🔒";
+  font-size: .9rem;
+}
+
+.reminder-date-display.is-empty{
+  background: #f4f7fa;
+  color: var(--muted);
+  font-weight: 500;
+  border-left-color:#cbd5e1;
+}
+
+/* =========================================
+   ALARM ALERT MODAL — gaya "panggilan masuk"
+   ========================================= */
+
+.alert-overlay{
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(160deg, var(--primary-dark), var(--primary) 55%, var(--primary-darker));
+  background-size: 200% 200%;
+  animation: overlayFade .3s ease, gradientShift 6s ease-in-out infinite alternate;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20000;
+  padding: 25px;
+}
+
+@keyframes gradientShift{
+  from{ background-position:0% 0%; }
+  to{ background-position:100% 100%; }
+}
+
+.alert-card{
+  text-align: center;
+  color: white;
+  max-width: 420px;
+  animation: modalPop .4s var(--ease);
+}
+
+.alert-pulse{
+  font-size: 3.6rem;
+  width: 130px;
+  height: 130px;
+  line-height: 130px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.14);
+  margin: 0 auto 25px;
+  position:relative;
+  animation: pulseCore 1.2s infinite ease-in-out;
+}
+
+.alert-pulse::before,
+.alert-pulse::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  border:2px solid rgba(255,255,255,.5);
+  animation: ringOut 1.8s infinite ease-out;
+}
+
+.alert-pulse::after{
+  animation-delay:.6s;
+}
+
+@keyframes pulseCore{
+  0%, 100%{ transform:scale(1); }
+  50%{ transform:scale(1.06); }
+}
+
+@keyframes ringOut{
+  0%{
+    transform:scale(1);
+    opacity:.7;
+  }
+  100%{
+    transform:scale(1.9);
+    opacity:0;
+  }
+}
+
+.alert-kicker{
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-size: .78rem;
+  opacity: .8;
+  margin-bottom: 10px;
+}
+
+.alert-card h2{
+  font-size: clamp(1.4rem, 2vw + 1rem, 1.8rem);
+  margin-bottom: 8px;
+}
+
+.alert-time{
+  opacity: .9;
+  margin-bottom: 4px;
+}
+
+.alert-desc{
+  opacity: .75;
+  font-size: .9rem;
+  margin-bottom: 30px;
+}
+
+.alert-dismiss{
+  background: white;
+  color: var(--primary);
+  max-width: 260px;
+  margin: 0 auto;
+}
+
+.alert-dismiss:hover{
+  transform: translateY(-3px);
+}
+
+/* =========================================
+   RESPONSIVE ADDITIONS
+   ========================================= */
+
+@media(max-width: 800px){
+
+  /* Di layar sempit, panel showcase dipindah ke atas dalam
+     bentuk yang lebih ringkas (carousel tetap jalan) supaya
+     penjelasan fitur tetap terlihat sebelum form, tanpa
+     membuat halaman jadi terlalu panjang untuk di-scroll. */
+  .auth-shell{
+    grid-template-columns: 1fr;
+    max-width: 460px;
+  }
+
+  .auth-showcase{
+    padding: 26px 24px 22px;
+    gap: 16px;
+  }
+
+  .auth-showcase-top p{
+    max-width: none;
+  }
+
+  .auth-feature-carousel{
+    min-height: 108px;
+  }
+
+  .auth-showcase-note{
+    padding-top: 10px;
+  }
+
+  .auth-panel{
+    padding: 26px 24px 30px;
+  }
+
+}
+
+@media(max-width: 480px){
+
+  .auth-showcase-top h1{
+    font-size: 1.2rem;
+  }
+
+  .auth-feature-carousel{
+    min-height: 118px;
+  }
+
+  .settings-card{
+    padding: 22px;
+  }
+
+}
+
+/* =========================================================
+   PANDUAN PENGISIAN FORM — progress bar, checklist per-field,
+   animasi validasi, tur spotlight, dan tombol bantuan.
+   ========================================================= */
+
+/* ----- Label dengan nomor langkah & centang ----- */
+
+label{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.field-step{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:20px;
+  height:20px;
+  min-width:20px;
+  border-radius:50%;
+  background:var(--primary-light);
+  color:var(--primary);
+  font-size:.72rem;
+  font-weight:800;
+}
+
+.field-check{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:18px;
+  height:18px;
+  min-width:18px;
+  border-radius:50%;
+  background:var(--success);
+  color:white;
+  font-size:.62rem;
+  font-weight:800;
+  opacity:0;
+  transform:scale(.4) rotate(-40deg);
+  transition:opacity .25s var(--ease), transform .25s var(--ease);
+  margin-left:auto;
+}
+
+.field-check.is-filled{
+  opacity:1;
+  transform:scale(1) rotate(0deg);
+  animation:checkPop .4s var(--ease);
+}
+
+@keyframes checkPop{
+  0%{ transform:scale(.4) rotate(-40deg); }
+  55%{ transform:scale(1.25) rotate(6deg); }
+  100%{ transform:scale(1) rotate(0deg); }
+}
+
+/* ----- Progress bar kelengkapan form ----- */
+
+.form-progress{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:20px;
+}
+
+.form-progress-track{
+  flex:1;
+  height:10px;
+  border-radius:20px;
+  background:#eef2f6;
+  overflow:hidden;
+  position:relative;
+}
+
+.form-progress-fill{
+  height:100%;
+  width:0%;
+  border-radius:20px;
+  background:linear-gradient(90deg, var(--primary), var(--secondary));
+  background-size:200% 100%;
+  transition:width .5s var(--ease);
+  animation:progressShimmer 2.4s linear infinite;
+  position:relative;
+}
+
+@keyframes progressShimmer{
+  0%{ background-position:0% 0%; }
+  100%{ background-position:200% 0%; }
+}
+
+.form-progress-text{
+  font-size:.76rem;
+  font-weight:700;
+  color:var(--muted);
+  white-space:nowrap;
+  min-width:88px;
+  text-align:right;
+  transition:color .3s var(--ease-soft);
+}
+
+.form-progress.is-complete .form-progress-text{
+  color:var(--success);
+}
+
+.form-progress.is-complete .form-progress-fill{
+  background:linear-gradient(90deg, var(--success), #16a34a);
+}
+
+/* ----- Animasi validasi: getar field yang error ----- */
+
+@keyframes fieldShake{
+  0%, 100%{ transform:translateX(0); }
+  15%{ transform:translateX(-9px); }
+  30%{ transform:translateX(8px); }
+  45%{ transform:translateX(-6px); }
+  60%{ transform:translateX(5px); }
+  75%{ transform:translateX(-3px); }
+  90%{ transform:translateX(2px); }
+}
+
+.field-shake{
+  animation:fieldShake .5s var(--ease-soft);
+}
+
+.field-shake input,
+.field-shake.time-type,
+#taskName.field-shake{
+  box-shadow:0 0 0 4px rgba(239,68,68,.22) !important;
+  border-color:var(--danger) !important;
+}
+
+/* ----- Animasi sukses pada tombol Tambah/Update ----- */
+
+@keyframes successPulse{
+  0%{ transform:scale(1); }
+  35%{ transform:scale(1.05); box-shadow:0 0 0 10px rgba(34,197,94,.18); }
+  100%{ transform:scale(1); box-shadow:0 6px 16px rgba(17,113,177,.22); }
+}
+
+.btn-success-pulse{
+  animation:successPulse .55s var(--ease);
+}
+
+.confetti-dot{
+  position:fixed;
+  width:7px;
+  height:7px;
+  border-radius:2px;
+  top:0;
+  left:0;
+  z-index:30000;
+  pointer-events:none;
+  animation:confettiFly .8s ease-out forwards;
+}
+
+@keyframes confettiFly{
+  0%{
+    transform:translate(-50%,-50%) scale(1) rotate(0deg);
+    opacity:1;
+  }
+  100%{
+    transform:translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(.3) rotate(240deg);
+    opacity:0;
+  }
+}
+
+/* ----- Tombol bantuan mengambang (putar ulang tur) ----- */
+
+.help-fab{
+  position:fixed;
+  right:clamp(16px, 3vw, 28px);
+  bottom:clamp(16px, 3vw, 28px);
+  width:54px;
+  height:54px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  color:white;
+  font-weight:800;
+  font-size:1.3rem;
+  box-shadow:0 12px 30px rgba(17,113,177,.35);
+  z-index:9500;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:transform var(--fast) var(--ease), box-shadow var(--fast) var(--ease);
+  animation:fabIntro .5s var(--ease) .3s both;
+}
+
+.help-fab:hover{
+  transform:translateY(-4px) scale(1.05);
+  box-shadow:0 16px 36px rgba(17,113,177,.45);
+}
+
+.help-fab:active{
+  transform:translateY(-1px) scale(.96);
+}
+
+@keyframes fabIntro{
+  from{ opacity:0; transform:translateY(20px) scale(.6); }
+  to{ opacity:1; transform:translateY(0) scale(1); }
+}
+
+.help-fab-ring{
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  border:2px solid rgba(17,113,177,.4);
+  animation:ringOut 2.6s infinite ease-out;
+}
+
+.help-fab-icon{
+  position:relative;
+  z-index:2;
+}
+
+/* ----- Tur spotlight & tooltip berjalan ----- */
+
+body.tour-locked{
+  overflow:hidden;
+}
+
+.tour-overlay{
+  position:fixed;
+  inset:0;
+  z-index:40000;
+  animation:overlayFade .25s ease;
+}
+
+.tour-overlay.hidden{
+  display:none;
+}
+
+.tour-spotlight{
+  position:fixed;
+  border-radius:18px;
+  box-shadow:0 0 0 9999px rgba(11,58,92,.62);
+  transition:top .35s var(--ease), left .35s var(--ease), width .35s var(--ease), height .35s var(--ease);
+  pointer-events:none;
+}
+
+.tour-beacon{
+  position:fixed;
+  border-radius:18px;
+  border:2px solid var(--secondary);
+  transition:top .35s var(--ease), left .35s var(--ease), width .35s var(--ease), height .35s var(--ease);
+  pointer-events:none;
+  animation:beaconPulse 1.6s infinite ease-out;
+}
+
+@keyframes beaconPulse{
+  0%{ box-shadow:0 0 0 0 rgba(252,193,2,.55); }
+  100%{ box-shadow:0 0 0 14px rgba(252,193,2,0); }
+}
+
+.tour-tooltip{
+  position:fixed;
+  background:white;
+  border-radius:var(--radius);
+  padding:20px 22px;
+  box-shadow:var(--shadow-lg);
+  z-index:40001;
+  max-width:330px;
+}
+
+.tour-tooltip-anim{
+  animation:tourTooltipIn .35s var(--ease);
+}
+
+@keyframes tourTooltipIn{
+  from{ opacity:0; transform:translateY(10px) scale(.96); }
+  to{ opacity:1; transform:translateY(0) scale(1); }
+}
+
+.tour-tooltip-arrow{
+  position:absolute;
+  width:16px;
+  height:16px;
+  background:white;
+  transform:rotate(45deg);
+}
+
+.tour-tooltip-arrow.arrow-up{
+  top:-8px;
+  border-radius:4px 0 0 0;
+}
+
+.tour-tooltip-arrow.arrow-down{
+  bottom:-8px;
+  border-radius:0 0 4px 0;
+}
+
+.tour-step-badge{
+  display:inline-block;
+  background:var(--secondary-light);
+  color:var(--secondary-dark);
+  font-size:.7rem;
+  font-weight:800;
+  padding:4px 10px;
+  border-radius:20px;
+  margin-bottom:10px;
+  letter-spacing:.4px;
+}
+
+.tour-tooltip h3{
+  color:var(--primary);
+  font-size:1.05rem;
+  margin-bottom:8px;
+  line-height:1.35;
+}
+
+.tour-tooltip p{
+  font-size:.86rem;
+  line-height:1.55;
+  color:var(--muted);
+  margin-bottom:16px;
+}
+
+.tour-dots{
+  display:flex;
+  gap:6px;
+  margin-bottom:16px;
+}
+
+.tour-dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#e2e8f0;
+  transition:background .25s var(--ease-soft), transform .25s var(--ease);
+}
+
+.tour-dot.active{
+  background:var(--primary);
+  transform:scale(1.3);
+}
+
+.tour-nav{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.tour-skip{
+  background:transparent;
+  color:var(--muted);
+  font-size:.78rem;
+  font-weight:700;
+  padding:8px 4px;
+  min-height:auto;
+}
+
+.tour-skip:hover{
+  color:var(--danger);
+}
+
+.tour-nav-right{
+  display:flex;
+  gap:8px;
+}
+
+.tour-prev,
+.tour-next{
+  min-height:40px;
+  padding:9px 16px;
+  border-radius:12px;
+  font-weight:700;
+  font-size:.82rem;
+  transition:transform var(--fast) var(--ease), filter var(--fast) var(--ease-soft), opacity var(--fast) var(--ease-soft);
+}
+
+.tour-prev{
+  background:#eef2f6;
+  color:var(--dark);
+}
+
+.tour-prev:disabled{
+  opacity:.4;
+  cursor:default;
+}
+
+.tour-prev:not(:disabled):hover{
+  transform:translateY(-2px);
+}
+
+.tour-next{
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  color:white;
+  box-shadow:0 6px 16px rgba(17,113,177,.28);
+}
+
+.tour-next:hover{
+  transform:translateY(-2px);
+  filter:brightness(1.05);
+}
+
+@media(max-width:640px){
+
+  .tour-tooltip{
+    padding:18px;
+  }
+
+  .help-fab{
+    width:48px;
+    height:48px;
+    font-size:1.15rem;
+  }
+
+}
