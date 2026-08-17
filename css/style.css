@@ -549,14 +549,17 @@ button{
    rata kiri, bukan center, di layar yang lebih lebar dari 460px. */
 .planner-header .planner-required-hint{
   display:block;
-  width:100%;
-  max-width:420px;
-  margin:clamp(6px, 1.2vw, 10px) auto 0;
-  padding:0 10px;
+  width:min(100%, 520px);
+  max-width:520px;
+  margin:8px auto 0;
+  padding:0;
   text-align:center;
-  font-size:clamp(.74rem, .3vw + .7rem, .82rem);
-  line-height:1.5;
-  opacity:.68;
+  font-size:clamp(.72rem, .25vw + .68rem, .82rem);
+  line-height:1.45;
+  font-weight:400;
+  color:var(--muted);
+  opacity:.85;
+  text-wrap:balance;
 }
 
 /* Input planner disorot lembut selama masih kosong, supaya jelas
