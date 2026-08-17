@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>RAD - Priority Planner</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+<!-- Stylesheet aplikasi -->
+<link rel="stylesheet" href="css/style.css">
+
+<!-- Library pihak ketiga -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
+</head>
+<body>
+
+<div class="toast" id="toast">
+  Data prioritas berhasil ditambahkan
+</div>
+
+<!-- =========================================================
+     LAYAR AUTENTIKASI (LOGIN / DAFTAR)
+     Akun bawaan: username "Ahmed", password "12345678".
+     Setiap pengguna baru yang mendaftar mendapat akun dan
+     data planner yang sepenuhnya terpisah.
+     ========================================================= -->
+<div id="authScreen" class="auth-screen">
+
+  <div class="auth-card">
+
+    <div class="auth-brand">
+      <div class="auth-logo">RAD</div>
+      <h1 data-i18n="appTitle">Priority Planner</h1>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <form id="loginForm" class="auth-form">
+
+      <h2 data-i18n="loginTitle">Masuk ke Akun</h2>
+      <p class="auth-subtitle" data-i18n="loginSubtitle">Masuk untuk mengakses planner prioritasmu</p>
+
+      <div class="form-group">
+        <label data-i18n="usernameLabel">Nama Pengguna</label>
+        <input type="text" id="loginUsername" data-i18n-placeholder="usernamePlaceholder" placeholder="Masukkan nama pengguna" autocomplete="username" required>
+      </div>
+
+      <div class="form-group">
+        <label data-i18n="passwordLabel">Kata Sandi</label>
+        <input type="password" id="loginPassword" data-i18n-placeholder="passwordPlaceholder" placeholder="Masukkan kata sandi" autocomplete="current-password" required>
+      </div>
+
+      <p class="auth-error" id="loginError"></p>
+
+      <button type="submit" class="btn" data-i18n="loginBtn">Masuk</button>
+
+      <p class="auth-switch">
+        <a href="#" id="showRegister" data-i18n="switchToRegister">Belum punya akun? Daftar di sini</a>
+      </p>
+
+    </form>
+
+    <!-- REGISTER FORM -->
+    <form id="registerForm" class="auth-form hidden">
+
+      <h2 data-i18n="registerTitle">Buat Akun Baru</h2>
+
+      <div class="form-group">
+        <label data-i18n="usernameLabel">Nama Pengguna</label>
+        <input type="text" id="registerUsername" data-i18n-placeholder="usernamePlaceholder" placeholder="Masukkan nama pengguna" autocomplete="username" required>
+      </div>
+
+      <div class="form-group">
+        <label data-i18n="passwordLabel">Kata Sandi</label>
+        <input type="password" id="registerPassword" data-i18n-placeholder="passwordPlaceholder" placeholder="Masukkan kata sandi" autocomplete="new-password" required>
+      </div>
+
+      <div class="form-group">
+        <label data-i18n="confirmPasswordLabel">Konfirmasi Kata Sandi</label>
+        <input type="password" id="registerConfirmPassword" data-i18n-placeholder="confirmPasswordPlaceholder" placeholder="Ulangi kata sandi" autocomplete="new-password" required>
+      </div>
+
+      <p class="auth-error" id="registerError"></p>
+
+      <button type="submit" class="btn" data-i18n="registerBtn">Daftar</button>
+
+      <p class="auth-switch">
+        <a href="#" id="showLogin" data-i18n="switchToLogin">Sudah punya akun? Masuk di sini</a>
+      </p>
+
+    </form>
+
+  </div>
+
+</div>
+
+<!-- =========================================================
+     APLIKASI UTAMA (tampil setelah login)
+     ========================================================= -->
+<div id="appScreen" class="container hidden">
+
+  <div class="header">
+
+    <div class="top-bar">
+      <span id="currentUserLabel" class="current-user"></span>
+      <div class="top-bar-actions">
+        <button type="button" class="icon-btn" id="settingsBtn" title="Settings">⚙️</button>
+        <button type="button" class="icon-btn" id="logoutBtn" data-i18n="logoutBtn">Keluar</button>
+      </div>
+    </div>
+
+    <h1 data-i18n="appTitle">Priority Planner</h1>
+    <p data-i18n="appDesc">
+      Susun aktivitas menggunakan Matrix Stephen R. Covey.
+      Fokus pada prioritas penting, tingkatkan produktivitas,
+      dan capai tujuan dengan lebih terarah.
+    </p>
+  </div>
+
+  <div class="stats">
+
+    <div class="stat-card">
+      <h2 id="totalTask">0</h2>
+      <p data-i18n="statTotal">Total Aktivitas</p>
+    </div>
+
+    <div class="stat-card">
+      <h2 id="importantTask">0</h2>
+      <p data-i18n="statImportant">Penting</p>
+    </div>
+
+    <div class="stat-card">
+      <h2 id="urgentTask">0</h2>
+      <p data-i18n="statUrgent">Mendesak</p>
+    </div>
+
+    <div class="stat-card">
+      <h2 id="completedTask">0</h2>
+      <p data-i18n="statCompleted">Selesai</p>
+    </div>
+
+  </div>
+
+  <div class="main">
+
+    <!-- CONTENT -->
+    <div class="content-area">
+
+      <!-- NAMA PLANNER -->
+      <div class="planner-header">
+
+        <label class="planner-label" data-i18n="plannerLabel">
+          Project Tabel Skala Prioritas
+        </label>
+
+        <input
+          type="text"
+          id="plannerName"
+          class="planner-input"
+          data-i18n-placeholder="plannerPlaceholder"
+          placeholder="Contoh: Prioritas Organisasi BEM 2026"
+          oninput="updatePlannerTitle()"
+        >
+
+        <h2 id="plannerTitle">
+          Belum Ada Nama Planner
+        </h2>
+
+      </div>
+
+      <div class="card">
+
+        <h2 class="card-title" data-i18n="addPriorityTitle">
+          Tambah Prioritas
+        </h2>
+
+        <div class="form-group">
+          <label data-i18n="taskNameLabel">Nama Aktivitas</label>
+          <input type="text" id="taskName" data-i18n-placeholder="taskNamePlaceholder" placeholder="Contoh: Menyelesaikan proposal">
+        </div>
+
+        <div class="form-group">
+          <label data-i18n="taskDescLabel">Deskripsi Aktivitas</label>
+          <textarea id="taskDesc" data-i18n-placeholder="taskDescPlaceholder" placeholder="Tulis detail aktivitas..."></textarea>
+        </div>
+
+        <div class="form-group">
+
+          <label data-i18n="timeLabel">Waktu Keperluan</label>
+
+          <div class="time-type">
+
+            <button type="button"
+              class="time-btn active"
+              data-i18n="timeDaily"
+              onclick="selectTimeType('daily', this)">
+              Harian
+            </button>
+
+            <button type="button"
+              class="time-btn"
+              data-i18n="timeMonthly"
+              onclick="selectTimeType('monthly', this)">
+              Bulanan
+            </button>
+
+            <button type="button"
+              class="time-btn"
+              data-i18n="timeYearly"
+              onclick="selectTimeType('yearly', this)">
+              Tahunan
+            </button>
+
+          </div>
+
+          <div id="timeInputWrapper">
+
+            <!-- Harian -->
+            <input
+              type="text"
+              id="dailyInput"
+              data-i18n-placeholder="datePlaceholder"
+              placeholder="Pilih tanggal">
+          </div>
+
+        </div>
+
+        <div class="form-group">
+          <label data-i18n="reminderLabel">Alarm Pengingat (opsional)</label>
+          <input type="datetime-local" id="taskReminder">
+          <small class="field-hint" data-i18n="reminderHint">
+            Notifikasi akan berbunyi seperti panggilan telepon pada waktu ini, mengikuti tanggal & jam perangkatmu.
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label data-i18n="categoryLabel">Kategori Prioritas</label>
+          <select id="taskType">
+
+            <option value="q1" data-i18n="catQ1">
+              Penting & Mendesak
+            </option>
+
+            <option value="q2" data-i18n="catQ2">
+              Penting Tidak Mendesak
+            </option>
+
+            <option value="q3" data-i18n="catQ3">
+              Tidak Penting Tapi Mendesak
+            </option>
+
+            <option value="q4" data-i18n="catQ4">
+              Tidak Penting & Tidak Mendesak
+            </option>
+
+          </select>
+        </div>
+
+        <div class="button-group">
+
+          <button class="btn" id="addTaskBtn" onclick="addTask()" data-i18n="btnAdd">
+            + Tambah Prioritas
+          </button>
+
+          <button class="btn save-btn" onclick="saveAllData()" data-i18n="btnSave">
+            Simpan
+          </button>
+
+          <button class="btn reset-btn" onclick="resetForm()" data-i18n="btnReset">
+            Reset
+          </button>
+
+          <button class="btn" onclick="exportPDF()" data-i18n="btnExportPdf">
+            Export PDF
+          </button>
+
+        </div>
+      </div>
+
+      <div class="priority-grid">
+
+        <div class="quadrant q1">
+          <h3 data-i18n="q1Title">🔥 Kuadran 1</h3>
+          <p data-i18n="q1Desc">Penting & Mendesak</p>
+          <div id="q1">
+            <div class="empty" data-i18n="emptyQuadrant">Belum ada aktivitas</div>
+          </div>
+        </div>
+
+        <div class="quadrant q2">
+          <h3 data-i18n="q2Title">🌱 Kuadran 2</h3>
+          <p data-i18n="q2Desc">Penting Tidak Mendesak</p>
+          <div id="q2">
+            <div class="empty" data-i18n="emptyQuadrant">Belum ada aktivitas</div>
+          </div>
+        </div>
+
+        <div class="quadrant q3">
+          <h3 data-i18n="q3Title">⚡ Kuadran 3</h3>
+          <p data-i18n="q3Desc">Tidak Penting Tapi Mendesak</p>
+          <div id="q3">
+            <div class="empty" data-i18n="emptyQuadrant">Belum ada aktivitas</div>
+          </div>
+        </div>
+
+        <div class="quadrant q4">
+          <h3 data-i18n="q4Title">🛋️ Kuadran 4</h3>
+          <p data-i18n="q4Desc">Tidak Penting & Tidak Mendesak</p>
+          <div id="q4">
+            <div class="empty" data-i18n="emptyQuadrant">Belum ada aktivitas</div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="footer">
+    Rizky Ahmed Darmawan © 2026
+  </div>
+
+</div>
+
+<!-- =========================================================
+     PANEL PENGATURAN: bahasa, notifikasi, sinkron kalender
+     ========================================================= -->
+<div id="settingsPanel" class="settings-overlay hidden">
+
+  <div class="settings-card">
+
+    <div class="settings-header">
+      <h2 data-i18n="settingsTitle">Pengaturan</h2>
+      <button type="button" class="icon-btn" id="closeSettingsBtn">✕</button>
+    </div>
+
+    <div class="form-group">
+      <label data-i18n="languageLabel">Bahasa</label>
+      <select id="languageSelect">
+        <option value="id">Bahasa Indonesia</option>
+        <option value="en">English</option>
+        <option value="ms">Bahasa Melayu</option>
+        <option value="jv">Basa Jawa</option>
+        <option value="su">Basa Sunda</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label data-i18n="notifPermissionLabel">Izin Notifikasi Perangkat</label>
+      <p class="field-hint" id="notifStatus">Belum diaktifkan</p>
+      <div class="button-group">
+        <button type="button" class="btn" id="requestNotifBtn" data-i18n="notifEnableBtn">Aktifkan Notifikasi</button>
+        <button type="button" class="btn save-btn" id="testNotifBtn" data-i18n="notifTestBtn">Uji Notifikasi</button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label data-i18n="btnSyncCalendar">Sinkronkan Semua ke Kalender</label>
+      <p class="field-hint" data-i18n="calendarSyncNote">
+        Tanggal & waktu mengikuti jam perangkatmu secara otomatis. Tombol ini mengunduh jadwal dalam format kalender standar (.ics) untuk ditambahkan ke aplikasi kalender bawaan perangkat.
+      </p>
+      <button type="button" class="btn" id="syncAllCalendarBtn" data-i18n="btnSyncCalendar">Sinkronkan Semua ke Kalender</button>
+    </div>
+
+    <button type="button" class="btn reset-btn" id="closeSettingsBtnBottom" onclick="toggleSettingsPanel(false)" data-i18n="settingsCloseBtn">Tutup</button>
+
+  </div>
+
+</div>
+
+<!-- =========================================================
+     MODAL KONTAK SIMPAN: WhatsApp & Email tujuan pengiriman
+     data, khusus untuk akun yang sedang login.
+     ========================================================= -->
+<div id="contactModal" class="settings-overlay hidden">
+
+  <div class="settings-card">
+
+    <div class="settings-header">
+      <h2 data-i18n="contactModalTitle">Kirim &amp; Simpan Data</h2>
+      <button type="button" class="icon-btn" id="closeContactBtn">✕</button>
+    </div>
+
+    <p class="field-hint" data-i18n="contactModalHint">
+      Masukkan nomor WhatsApp dan email tujuanmu sendiri. Data hanya
+      tersimpan di perangkat ini dan dipakai untuk fitur Simpan akun ini saja.
+    </p>
+
+    <form id="contactForm">
+
+      <div class="form-group">
+        <label data-i18n="contactWhatsappLabel">Nomor WhatsApp</label>
+        <input
+          type="tel"
+          id="contactWhatsapp"
+          data-i18n-placeholder="contactWhatsappPlaceholder"
+          placeholder="Contoh: 6281234567890">
+      </div>
+
+      <div class="form-group">
+        <label data-i18n="contactEmailLabel">Alamat Email</label>
+        <input
+          type="email"
+          id="contactEmail"
+          data-i18n-placeholder="contactEmailPlaceholder"
+          placeholder="Contoh: nama@email.com">
+      </div>
+
+      <p id="contactError" class="field-hint" style="color:var(--danger);display:none;"></p>
+
+      <div class="button-group">
+        <button type="submit" class="btn save-btn" id="contactSaveBtn" data-i18n="contactSaveBtn">Simpan &amp; Kirim</button>
+        <button type="button" class="btn reset-btn" id="contactCancelBtn" data-i18n="contactCancelBtn">Batal</button>
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+
+<!-- =========================================================
+     MODAL ALARM PENGINGAT — gaya "panggilan masuk"
+     ========================================================= -->
+<div id="alertModal" class="alert-overlay hidden">
+
+  <div class="alert-card">
+
+    <div class="alert-pulse">🔔</div>
+
+    <p class="alert-kicker" data-i18n="alertIncoming">Pengingat Prioritas</p>
+    <h2 id="alertTaskName">Nama Aktivitas</h2>
+    <p id="alertTaskTime" class="alert-time">Waktu</p>
+    <p id="alertTaskDesc" class="alert-desc">Deskripsi</p>
+
+    <button type="button" class="btn alert-dismiss" id="dismissAlertBtn" data-i18n="alertAnswer">
+      Matikan Alarm
+    </button>
+
+  </div>
+
+</div>
+
+<!-- ==========================================================
+     MODUL JAVASCRIPT APLIKASI
+     Urutan pemuatan penting: config & i18n dulu, lalu auth
+     (butuh i18n untuk pesan error), lalu storage (butuh auth
+     untuk kunci data per pengguna), lalu ui/time-picker/
+     analysis (fungsi bantuan), baru notifications/notify-
+     engine/calendar-sync/tasks (fitur), dan main.js terakhir
+     sebagai titik masuk (bootstrap).
+     ========================================================== -->
+
+<script src="js/config.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/contacts.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/time-picker.js"></script>
+<script src="js/analysis.js"></script>
+<script src="js/notifications.js"></script>
+<script src="js/notify-engine.js"></script>
+<script src="js/calendar-sync.js"></script>
+<script src="js/tasks.js"></script>
+<script src="js/pdf-export.js"></script>
+<script src="js/main.js"></script>
+
+</body>
+</html>
